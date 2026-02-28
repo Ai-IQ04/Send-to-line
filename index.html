@@ -10,6 +10,7 @@
             --primary: #22c55e; --dark: #0f172a;
             --b0: #22c55e; --b1: #eab308; --b2: #f97316;
             --b3: #ef4444; --b4: #b91c1c; --b5: #7f1d1d;
+            --danger: #ef4444;
         }
         body {
             font-family: 'Sarabun', sans-serif;
@@ -89,6 +90,7 @@
         .btn-add { background: var(--dark); color: white; margin-top: 15px; }
         .btn-send { background: var(--primary); color: white; margin-top: 15px; font-size: 1.1rem; }
         .btn-tool { background: white; color: var(--dark); border: 1px solid #ddd; margin-top: 10px; font-size: 0.9rem; }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); margin-top: 30px; font-size: 0.85rem; }
         .btn:active { transform: scale(0.96); }
     </style>
 </head>
@@ -153,12 +155,13 @@
 
     <button class="btn btn-tool" onclick="copySummary()">📋 คัดลอกสรุปยอดวันนี้</button>
     <button class="btn btn-tool" onclick="sendDailySummary()" style="background:var(--dark); color:white;">📊 ส่งสรุปยอดแยก Bucket</button>
+    
+    <button class="btn btn-danger" onclick="confirmReset()">⚠️ ล้างยอดสะสมรายวัน</button>
 </div>
 
 <script>
     let currentB = "B0", items = [], editingId = null;
 
-    // ระบบสั่นเบาๆ
     const haptic = () => { if(window.navigator.vibrate) window.navigator.vibrate(10); };
 
     function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
@@ -181,7 +184,6 @@
         const due = document.getElementById('t-due').value.trim();
         const amt = parseFloat(document.getElementById('t-amt').value);
         const cnt = document.getElementById('t-cnt').value.trim();
-
         if (!due || !amt || !cnt) return alert("กรุณาลงข้อมูลให้ครบ");
 
         if(editingId) {
@@ -192,7 +194,6 @@
         } else {
             items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
         }
-        
         render();
         document.getElementById('t-amt').value = ''; document.getElementById('t-cnt').value = '';
     }
@@ -200,7 +201,6 @@
     function render() {
         const container = document.getElementById('final-list');
         document.getElementById('list-card').style.display = items.length ? 'block' : 'none';
-
         container.innerHTML = items.map(i => `
             <div class="item" style="border-left: 5px solid var(--${i.bkt.toLowerCase()})">
                 <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
@@ -211,7 +211,6 @@
                 </div>
             </div>
         `).join('');
-        updateDashTotal();
     }
 
     function editItem(id) {
@@ -234,10 +233,15 @@
         items.forEach(i => {
             msg += `Due ${i.due} (${i.bkt})\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
             total += i.amt;
+            stats[i.bkt] = (batchStats[i.bkt] || 0) + i.amt; // Fix: use simple stats
             stats[i.bkt] = (stats[i.bkt] || 0) + i.amt;
         });
+        // Simplified Stats for sending
+        const roundStats = {};
+        items.forEach(i => roundStats[i.bkt] = (roundStats[i.bkt] || 0) + i.amt);
+
         msg += `รวม ${total.toLocaleString()} บาท`;
-        saveDaily(total, stats);
+        saveDaily(total, roundStats);
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
         items = []; render();
     }
@@ -254,14 +258,23 @@
 
     function updateDashTotal() {
         const today = new Date().toLocaleDateString();
-        const daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}'); // Compatible with old version
         const v2 = JSON.parse(localStorage.getItem('collectio_v2') || '{}');
         const total = (v2[today]?.total || 0);
         document.getElementById('dash-total').innerText = total.toLocaleString();
     }
 
+    function confirmReset() {
+        haptic();
+        if (confirm("⚠️ ยืนยันจะล้างยอดสะสมทั้งหมดของวันนี้ใช่ไหม?\nข้อมูลยอดรวมใน Dashboard จะกลับเป็น 0")) {
+            localStorage.removeItem('collectio_v2');
+            updateDashTotal();
+            alert("ล้างข้อมูลเรียบร้อยแล้ว");
+        }
+    }
+
     async function copySummary() {
         const msg = getSummaryText();
+        if(msg.includes("ยังไม่มีข้อมูล")) return alert(msg);
         await navigator.clipboard.writeText(msg);
         alert("คัดลอกสรุปยอดลง Clipboard แล้ว!");
     }
@@ -276,10 +289,13 @@
         return msg;
     }
 
-    function sendDailySummary() { window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(getSummaryText()); }
+    function sendDailySummary() { 
+        const txt = getSummaryText();
+        if(txt.includes("ยังไม่มีข้อมูล")) return alert(txt);
+        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(txt); 
+    }
 
-    // Auto Reset & Init
-    setInterval(() => { if(new Date().getHours() === 0 && new Date().getMinutes() === 0) localStorage.removeItem('collectio_v2'); }, 60000);
+    // Init
     updateDashBranch(); updateDashTotal();
 </script>
 </body>
