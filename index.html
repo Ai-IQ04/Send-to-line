@@ -3,61 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimal LINE Reporter</title>
+    <title>Collectio | สรุปยอดจัดเก็บหนี้รายวัน</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00b900; --bg: #f4f7f6; --text: #4a4a4a; --card: #ffffff; }
-        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .container { max-width: 500px; margin: auto; }
+        :root { --primary: #00b900; --dark: #1a1a1a; --bg: #f2f4f7; --card: #ffffff; }
+        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 20px 15px; }
+        .container { max-width: 480px; margin: auto; }
         
-        /* Card Style */
-        .card { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); margin-bottom: 20px; }
-        h3 { margin: 0 0 20px 0; font-weight: 600; font-size: 1.1rem; color: #333; }
+        /* Header Section */
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { margin: 0; font-size: 1.8rem; color: var(--dark); letter-spacing: 1px; }
+        .header p { margin: 5px 0 0; font-size: 0.9rem; color: #888; }
 
-        /* Input Styles */
-        .input-group { margin-bottom: 15px; }
-        label { font-size: 0.85rem; color: #888; margin-bottom: 6px; display: block; }
+        /* Card Design */
+        .card { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.02); }
+        h3 { margin: 0 0 18px 0; font-size: 0.95rem; font-weight: 600; color: #aaa; text-transform: uppercase; }
+        
+        label { font-size: 0.8rem; font-weight: 600; color: #555; display: block; margin-bottom: 8px; }
         select, input { 
-            width: 100%; border: 1.5px solid #eee; border-radius: 12px; padding: 12px; 
-            font-size: 1rem; transition: 0.3s; box-sizing: border-box; font-family: 'Sarabun';
+            width: 100%; border: 1.5px solid #eee; border-radius: 14px; padding: 12px; 
+            font-size: 1rem; box-sizing: border-box; font-family: 'Sarabun'; background: #fcfcfc; transition: 0.3s;
         }
-        input:focus { border-color: var(--primary); outline: none; background: #fafafa; }
+        input:focus { border-color: var(--primary); background: #fff; outline: none; }
 
-        /* Bucket Pads (Pills) */
-        .bucket-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-        .bucket-pad { 
-            padding: 8px 16px; border: 1.5px solid #eee; border-radius: 20px; 
-            cursor: pointer; font-size: 0.9rem; transition: 0.2s; background: white;
+        /* Bucket Pills - กะทัดรัดขึ้น */
+        .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 12px 0; }
+        .b-pad { 
+            padding: 10px 0; border: 1.5px solid #eee; border-radius: 12px; text-align: center;
+            cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; background: white;
         }
-        .bucket-pad.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .b-pad.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,185,0,0.2); }
 
-        /* List Styles */
-        .item-list { list-style: none; padding: 0; margin: 0; }
-        .item-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 0; border-bottom: 1px solid #f0f0f0; animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .item-info { flex: 1; }
-        .item-main { font-weight: 600; font-size: 0.95rem; }
-        .item-sub { font-size: 0.8rem; color: #999; }
-        .btn-del { color: #ff6b6b; background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 5px 10px; }
+        /* รายการที่เพิ่มแล้ว */
+        .item-list { border-top: 1px solid #f5f5f5; margin-top: 15px; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
+        .item b { font-size: 1rem; color: var(--dark); }
+        .item small { color: #999; font-size: 0.8rem; }
+        .item-del { color: #ffbcbc; cursor: pointer; font-size: 1.2rem; padding-left: 15px; }
 
-        /* Button Styles */
-        .btn { border: none; border-radius: 16px; padding: 14px; width: 100%; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; transition: 0.3s; }
-        .btn-add { background: #f0f0f0; color: #555; margin-top: 10px; }
-        .btn-add:hover { background: #e5e5e5; }
-        .btn-send { background: var(--primary); color: white; margin-top: 10px; box-shadow: 0 8px 20px rgba(0,185,0,0.2); }
-        
-        .total-area { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
-        .total-price { font-size: 1.4rem; font-weight: bold; color: var(--primary); }
+        /* Buttons */
+        .btn { border: none; border-radius: 16px; padding: 16px; width: 100%; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; margin-top: 10px; transition: 0.3s; font-size: 1rem; }
+        .btn-add { background: #f0fdf4; color: var(--primary); border: 1.5px dashed var(--primary); }
+        .btn-send { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(0,185,0,0.25); margin-top: 20px; }
+        .btn-daily { background: var(--dark); color: white; margin-top: 10px; opacity: 0.9; }
+        .btn:active { transform: scale(0.98); }
+
+        .summary-box { margin-top: 15px; display: flex; justify-content: space-between; align-items: baseline; }
+        .summary-box span { font-size: 1.4rem; font-weight: bold; color: var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="header">
+        <h1>Collectio</h1>
+        <p>สรุปยอดจัดเก็บหนี้รายวัน</p>
+    </div>
+
     <div class="card">
-        <label>เลือกสาขา</label>
+        <label>เลือกสาขาปฏิบัติงาน</label>
         <select id="branch">
             <option>สาขาเขาช่องพราน</option><option>สาขานางแก้ว</option><option>สาขาจอมบึง</option>
             <option>สาขาดอนตูมราชบุรี</option><option>สาขาสวนผึ้ง</option><option>สาขาบ้านคา</option>
@@ -68,114 +72,122 @@
     </div>
 
     <div class="card">
-        <h3>➕ เพิ่มรายการใหม่</h3>
-        
-        <div style="display: flex; gap: 10px;">
-            <div style="flex: 1;">
-                <label>Due Date</label>
-                <input type="text" id="temp-due" placeholder="เช่น 4/2">
-            </div>
-            <div style="flex: 2;">
-                <label>ยอดหนี้ (บาท)</label>
-                <input type="number" id="temp-amt" placeholder="0.00">
-            </div>
+        <h3>➕ รายการจัดเก็บ</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <div style="flex:1"><label>Due</label><input type="text" id="t-due" placeholder="4/2"></div>
+            <div style="flex:2"><label>ยอดหนี้ (บาท)</label><input type="number" id="t-amt" placeholder="0.00"></div>
         </div>
-
-        <label style="margin-top:15px;">Bucket</label>
-        <div class="bucket-container" id="bucket-pills">
-            <div class="bucket-pad active" onclick="selectBucket(this)">B0</div>
-            <div class="bucket-pad" onclick="selectBucket(this)">B1</div>
-            <div class="bucket-pad" onclick="selectBucket(this)">B2</div>
-            <div class="bucket-pad" onclick="selectBucket(this)">B3</div>
-            <div class="bucket-pad" onclick="selectBucket(this)">B4</div>
-            <div class="bucket-pad" onclick="selectBucket(this)">B5</div>
+        
+        <label>Bucket</label>
+        <div class="bucket-grid">
+            <div class="b-pad active" onclick="setB(this)">B0</div>
+            <div class="b-pad" onclick="setB(this)">B1</div>
+            <div class="b-pad" onclick="setB(this)">B2</div>
+            <div class="b-pad" onclick="setB(this)">B3</div>
+            <div class="b-pad" onclick="setB(this)">B4</div>
+            <div class="b-pad" onclick="setB(this)">B5</div>
         </div>
 
         <label>เลขที่สัญญา</label>
-        <input type="text" id="temp-cnt" placeholder="ระบุเลขที่สัญญา">
-
-        <button class="btn btn-add" onclick="addItemToList()">+ เพิ่มลงในรายการ</button>
+        <input type="text" id="t-cnt" placeholder="ระบุเลขที่สัญญา">
+        <button class="btn btn-add" onclick="addItem()">เพิ่มลงรายการ</button>
     </div>
 
     <div class="card" id="list-card" style="display:none;">
-        <h3>📋 รายชื่อที่เตรียมส่ง</h3>
-        <ul class="item-list" id="final-list"></ul>
-
-        <div class="total-area">
-            <span>รวมผลลัพธ์:</span>
-            <span class="total-price"><span id="grand-total">0</span> <small style="font-size:0.8rem; color:#999">บาท</small></span>
+        <h3>📋 รายการเตรียมส่ง</h3>
+        <div id="final-list" class="item-list"></div>
+        <div class="summary-box">
+            <small style="color:#999">ยอดรวมเคสที่เลือก:</small>
+            <span><span id="g-total">0</span> <small style="font-size:0.8rem">บาท</small></span>
         </div>
-
-        <button class="btn btn-send" onclick="sendToLine()">ส่งข้อมูลเข้า LINE</button>
+        <button class="btn btn-send" onclick="sendLine()">ส่งเข้า LINE</button>
     </div>
+
+    <button class="btn btn-daily" onclick="sendDailySummary()">📊 สรุปยอดรวมวันนี้</button>
 </div>
 
 <script>
-    let selectedBucket = "B0";
+    let currentB = "B0";
     let items = [];
 
-    function selectBucket(el) {
-        document.querySelectorAll('.bucket-pad').forEach(p => p.classList.remove('active'));
+    function setB(el) {
+        document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
-        selectedBucket = el.innerText;
+        currentB = el.innerText;
     }
 
-    function addItemToList() {
-        const due = document.getElementById('temp-due').value || '-';
-        const amt = parseFloat(document.getElementById('temp-amt').value) || 0;
-        const cnt = document.getElementById('temp-cnt').value || '-';
+    function addItem() {
+        const due = document.getElementById('t-due').value || '-';
+        const amt = parseFloat(document.getElementById('t-amt').value) || 0;
+        const cnt = document.getElementById('t-cnt').value || '-';
+        if(amt <= 0) return;
 
-        if(amt <= 0) { alert("กรุณาระบุยอดหนี้"); return; }
-
-        const item = { id: Date.now(), due, amt, cnt, bucket: selectedBucket };
-        items.push(item);
-        
-        renderList();
-        
-        // ล้างข้อมูลช่องกรอก
-        document.getElementById('temp-amt').value = '';
-        document.getElementById('temp-cnt').value = '';
+        items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
+        render();
+        document.getElementById('t-amt').value = '';
+        document.getElementById('t-cnt').value = '';
     }
 
-    function renderList() {
-        const listContainer = document.getElementById('final-list');
+    function render() {
         const listCard = document.getElementById('list-card');
-        
-        if(items.length > 0) listCard.style.display = 'block';
-        else listCard.style.display = 'none';
+        const container = document.getElementById('final-list');
+        listCard.style.display = items.length ? 'block' : 'none';
 
-        listContainer.innerHTML = items.map(item => `
-            <li class="item-row">
-                <div class="item-info">
-                    <div class="item-main">${item.cnt} = ${item.amt.toLocaleString()} บาท</div>
-                    <div class="item-sub">Due ${item.due} (${item.bucket})</div>
+        container.innerHTML = items.map(i => `
+            <div class="item">
+                <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
+                <div style="text-align:right">
+                    <b>${i.amt.toLocaleString()}</b>
+                    <span class="item-del" onclick="remove(${i.id})">✕</span>
                 </div>
-                <button class="btn-del" onclick="removeItem(${item.id})">×</button>
-            </li>
+            </div>
         `).join('');
 
-        const total = items.reduce((sum, item) => sum + item.amt, 0);
-        document.getElementById('grand-total').innerText = total.toLocaleString();
+        const total = items.reduce((s, i) => s + i.amt, 0);
+        document.getElementById('g-total').innerText = total.toLocaleString();
     }
 
-    function removeItem(id) {
+    function remove(id) {
         items = items.filter(i => i.id !== id);
-        renderList();
+        render();
     }
 
-    function sendToLine() {
+    function sendLine() {
         const branch = document.getElementById('branch').value;
-        let message = branch + "\n";
+        let msg = branch + "\n";
         let total = 0;
 
-        items.forEach(item => {
-            message += `Due ${item.due} (${item.bucket})\n`;
-            message += `${item.cnt} = ${item.amt.toLocaleString()}\n`;
-            total += item.amt;
+        items.forEach(i => {
+            msg += `Due ${i.due} (${i.bkt})\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
+            total += i.amt;
         });
+        msg += `รวม ${total.toLocaleString()} บาท`;
 
-        message += `รวม ${total.toLocaleString()} บาท`;
-        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(message);
+        saveToDaily(total);
+        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
+        
+        items = [];
+        render();
+    }
+
+    function saveToDaily(amt) {
+        const today = new Date().toLocaleDateString();
+        let daily = JSON.parse(localStorage.getItem('daily_total') || '{}');
+        if (!daily[today]) daily[today] = 0;
+        daily[today] += amt;
+        localStorage.setItem('daily_total', JSON.stringify(daily));
+    }
+
+    function sendDailySummary() {
+        const today = new Date().toLocaleDateString();
+        const branch = document.getElementById('branch').value;
+        const daily = JSON.parse(localStorage.getItem('daily_total') || '{}');
+        const total = daily[today] || 0;
+
+        if (total === 0) return alert("ยังไม่มียอดจัดเก็บของวันนี้");
+
+        const msg = `📊 สรุปยอดจัดเก็บประจำวัน\nสาขา: ${branch}\nประจำวันที่: ${today}\nยอดจัดเก็บสะสมทั้งสิ้น: ${total.toLocaleString()} บาท`;
+        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
     }
 </script>
 
