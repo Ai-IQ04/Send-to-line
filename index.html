@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collectio | สรุปยอดจัดเก็บแยก Bucket</title>
+    <title>Collectio | สรุปยอดจัดเก็บ</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00b900; --dark: #1a1a1a; --bg: #f2f4f7; --card: #ffffff; }
@@ -37,7 +37,7 @@
 <div class="container">
     <div class="header">
         <h1>Collectio</h1>
-        <p>สรุปยอดจัดเก็บแยก Bucket</p>
+        <p>สรุปยอดจัดเก็บหนี้รายวัน</p>
     </div>
 
     <div class="card">
@@ -52,7 +52,7 @@
     </div>
 
     <div class="card">
-        <h3>➕ เพิ่มรายการ</h3>
+        <h3>➕ รายการจัดเก็บ</h3>
         <div style="display: flex; gap: 10px; margin-bottom: 12px;">
             <div style="flex:1"><label>Due</label><input type="text" id="t-due" placeholder="4/2"></div>
             <div style="flex:2"><label>ยอดหนี้ (บาท)</label><input type="number" id="t-amt" placeholder="0.00"></div>
@@ -75,13 +75,13 @@
         <h3>📋 รายการเตรียมส่ง</h3>
         <div id="final-list" class="item-list"></div>
         <div class="summary-box">
-            <small style="color:#999">รวมรอบนี้:</small>
+            <small style="color:#999">ยอดรวมรอบนี้:</small>
             <span><span id="g-total">0</span> <small style="font-size:0.8rem">บาท</small></span>
         </div>
         <button class="btn btn-send" onclick="sendLine()">ส่งเข้า LINE</button>
     </div>
 
-    <button class="btn btn-daily" onclick="sendDailySummary()">📊 สรุปยอดแยก Bucket วันนี้</button>
+    <button class="btn btn-daily" onclick="sendDailySummary()">📊 สรุปยอดรวมวันนี้</button>
 </div>
 
 <script>
@@ -143,11 +143,8 @@
         const today = new Date().toLocaleDateString();
         let daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}');
         if (!daily[today]) daily[today] = { total: 0, buckets: {} };
-        
         daily[today].total += totalAmt;
-        for (let b in stats) {
-            daily[today].buckets[b] = (daily[today].buckets[b] || 0) + stats[b];
-        }
+        for (let b in stats) { daily[today].buckets[b] = (daily[today].buckets[b] || 0) + stats[b]; }
         localStorage.setItem('collectio_daily', JSON.stringify(daily));
     }
 
@@ -156,19 +153,15 @@
         const branch = document.getElementById('branch').value;
         const daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}');
         const data = daily[today];
-
         if (!data || data.total === 0) return alert("ยังไม่มียอดจัดเก็บของวันนี้");
 
-        let msg = `📊 สรุปยอดจัดเก็บรายวัน (แยก Bucket)\nสาขา: ${branch}\nประจำวันที่: ${today}\n---\n`;
+        let msg = `📊 สรุปยอดจัดเก็บประจำวัน\nสาขา: ${branch}\nประจำวันที่: ${today}\n---\n`;
         const sortedBuckets = Object.keys(data.buckets).sort();
-        sortedBuckets.forEach(b => {
-            msg += `${b}: ${data.buckets[b].toLocaleString()} บาท\n`;
-        });
+        sortedBuckets.forEach(b => { msg += `${b}: ${data.buckets[b].toLocaleString()} บาท\n`; });
         msg += `---\nยอดรวมทั้งหมด: ${data.total.toLocaleString()} บาท`;
 
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
     }
 </script>
-
 </body>
 </html>
