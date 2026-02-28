@@ -3,51 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collectio | สรุปยอดจัดเก็บหนี้รายวัน</title>
+    <title>Collectio | สรุปยอดจัดเก็บแยก Bucket</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00b900; --dark: #1a1a1a; --bg: #f2f4f7; --card: #ffffff; }
         body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 20px 15px; }
         .container { max-width: 480px; margin: auto; }
-        
-        /* Header Section */
         .header { text-align: center; margin-bottom: 25px; }
         .header h1 { margin: 0; font-size: 1.8rem; color: var(--dark); letter-spacing: 1px; }
         .header p { margin: 5px 0 0; font-size: 0.9rem; color: #888; }
-
-        /* Card Design */
         .card { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.02); }
         h3 { margin: 0 0 18px 0; font-size: 0.95rem; font-weight: 600; color: #aaa; text-transform: uppercase; }
-        
         label { font-size: 0.8rem; font-weight: 600; color: #555; display: block; margin-bottom: 8px; }
-        select, input { 
-            width: 100%; border: 1.5px solid #eee; border-radius: 14px; padding: 12px; 
-            font-size: 1rem; box-sizing: border-box; font-family: 'Sarabun'; background: #fcfcfc; transition: 0.3s;
-        }
+        select, input { width: 100%; border: 1.5px solid #eee; border-radius: 14px; padding: 12px; font-size: 1rem; box-sizing: border-box; font-family: 'Sarabun'; background: #fcfcfc; transition: 0.3s; }
         input:focus { border-color: var(--primary); background: #fff; outline: none; }
-
-        /* Bucket Pills - กะทัดรัดขึ้น */
         .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 12px 0; }
-        .b-pad { 
-            padding: 10px 0; border: 1.5px solid #eee; border-radius: 12px; text-align: center;
-            cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; background: white;
-        }
+        .b-pad { padding: 10px 0; border: 1.5px solid #eee; border-radius: 12px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; background: white; }
         .b-pad.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,185,0,0.2); }
-
-        /* รายการที่เพิ่มแล้ว */
         .item-list { border-top: 1px solid #f5f5f5; margin-top: 15px; }
         .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
         .item b { font-size: 1rem; color: var(--dark); }
-        .item small { color: #999; font-size: 0.8rem; }
         .item-del { color: #ffbcbc; cursor: pointer; font-size: 1.2rem; padding-left: 15px; }
-
-        /* Buttons */
         .btn { border: none; border-radius: 16px; padding: 16px; width: 100%; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; margin-top: 10px; transition: 0.3s; font-size: 1rem; }
         .btn-add { background: #f0fdf4; color: var(--primary); border: 1.5px dashed var(--primary); }
         .btn-send { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(0,185,0,0.25); margin-top: 20px; }
-        .btn-daily { background: var(--dark); color: white; margin-top: 10px; opacity: 0.9; }
-        .btn:active { transform: scale(0.98); }
-
+        .btn-daily { background: var(--dark); color: white; margin-top: 10px; }
         .summary-box { margin-top: 15px; display: flex; justify-content: space-between; align-items: baseline; }
         .summary-box span { font-size: 1.4rem; font-weight: bold; color: var(--primary); }
     </style>
@@ -57,7 +37,7 @@
 <div class="container">
     <div class="header">
         <h1>Collectio</h1>
-        <p>สรุปยอดจัดเก็บหนี้รายวัน</p>
+        <p>สรุปยอดจัดเก็บแยก Bucket</p>
     </div>
 
     <div class="card">
@@ -72,12 +52,11 @@
     </div>
 
     <div class="card">
-        <h3>➕ รายการจัดเก็บ</h3>
+        <h3>➕ เพิ่มรายการ</h3>
         <div style="display: flex; gap: 10px; margin-bottom: 12px;">
             <div style="flex:1"><label>Due</label><input type="text" id="t-due" placeholder="4/2"></div>
             <div style="flex:2"><label>ยอดหนี้ (บาท)</label><input type="number" id="t-amt" placeholder="0.00"></div>
         </div>
-        
         <label>Bucket</label>
         <div class="bucket-grid">
             <div class="b-pad active" onclick="setB(this)">B0</div>
@@ -87,7 +66,6 @@
             <div class="b-pad" onclick="setB(this)">B4</div>
             <div class="b-pad" onclick="setB(this)">B5</div>
         </div>
-
         <label>เลขที่สัญญา</label>
         <input type="text" id="t-cnt" placeholder="ระบุเลขที่สัญญา">
         <button class="btn btn-add" onclick="addItem()">เพิ่มลงรายการ</button>
@@ -97,13 +75,13 @@
         <h3>📋 รายการเตรียมส่ง</h3>
         <div id="final-list" class="item-list"></div>
         <div class="summary-box">
-            <small style="color:#999">ยอดรวมเคสที่เลือก:</small>
+            <small style="color:#999">รวมรอบนี้:</small>
             <span><span id="g-total">0</span> <small style="font-size:0.8rem">บาท</small></span>
         </div>
         <button class="btn btn-send" onclick="sendLine()">ส่งเข้า LINE</button>
     </div>
 
-    <button class="btn btn-daily" onclick="sendDailySummary()">📊 สรุปยอดรวมวันนี้</button>
+    <button class="btn btn-daily" onclick="sendDailySummary()">📊 สรุปยอดแยก Bucket วันนี้</button>
 </div>
 
 <script>
@@ -121,7 +99,6 @@
         const amt = parseFloat(document.getElementById('t-amt').value) || 0;
         const cnt = document.getElementById('t-cnt').value || '-';
         if(amt <= 0) return;
-
         items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
         render();
         document.getElementById('t-amt').value = '';
@@ -132,61 +109,63 @@
         const listCard = document.getElementById('list-card');
         const container = document.getElementById('final-list');
         listCard.style.display = items.length ? 'block' : 'none';
-
         container.innerHTML = items.map(i => `
             <div class="item">
                 <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
-                <div style="text-align:right">
-                    <b>${i.amt.toLocaleString()}</b>
-                    <span class="item-del" onclick="remove(${i.id})">✕</span>
-                </div>
+                <div style="text-align:right"><b>${i.amt.toLocaleString()}</b><span class="item-del" onclick="remove(${i.id})">✕</span></div>
             </div>
         `).join('');
-
         const total = items.reduce((s, i) => s + i.amt, 0);
         document.getElementById('g-total').innerText = total.toLocaleString();
     }
 
-    function remove(id) {
-        items = items.filter(i => i.id !== id);
-        render();
-    }
+    function remove(id) { items = items.filter(i => i.id !== id); render(); }
 
     function sendLine() {
         const branch = document.getElementById('branch').value;
         let msg = branch + "\n";
-        let total = 0;
+        let batchTotal = 0;
+        let batchStats = {};
 
         items.forEach(i => {
             msg += `Due ${i.due} (${i.bkt})\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
-            total += i.amt;
+            batchTotal += i.amt;
+            batchStats[i.bkt] = (batchStats[i.bkt] || 0) + i.amt;
         });
-        msg += `รวม ${total.toLocaleString()} บาท`;
+        msg += `รวม ${batchTotal.toLocaleString()} บาท`;
 
-        saveToDaily(total);
+        saveToDaily(batchTotal, batchStats);
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
-        
-        items = [];
-        render();
+        items = []; render();
     }
 
-    function saveToDaily(amt) {
+    function saveToDaily(totalAmt, stats) {
         const today = new Date().toLocaleDateString();
-        let daily = JSON.parse(localStorage.getItem('daily_total') || '{}');
-        if (!daily[today]) daily[today] = 0;
-        daily[today] += amt;
-        localStorage.setItem('daily_total', JSON.stringify(daily));
+        let daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}');
+        if (!daily[today]) daily[today] = { total: 0, buckets: {} };
+        
+        daily[today].total += totalAmt;
+        for (let b in stats) {
+            daily[today].buckets[b] = (daily[today].buckets[b] || 0) + stats[b];
+        }
+        localStorage.setItem('collectio_daily', JSON.stringify(daily));
     }
 
     function sendDailySummary() {
         const today = new Date().toLocaleDateString();
         const branch = document.getElementById('branch').value;
-        const daily = JSON.parse(localStorage.getItem('daily_total') || '{}');
-        const total = daily[today] || 0;
+        const daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}');
+        const data = daily[today];
 
-        if (total === 0) return alert("ยังไม่มียอดจัดเก็บของวันนี้");
+        if (!data || data.total === 0) return alert("ยังไม่มียอดจัดเก็บของวันนี้");
 
-        const msg = `📊 สรุปยอดจัดเก็บประจำวัน\nสาขา: ${branch}\nประจำวันที่: ${today}\nยอดจัดเก็บสะสมทั้งสิ้น: ${total.toLocaleString()} บาท`;
+        let msg = `📊 สรุปยอดจัดเก็บรายวัน (แยก Bucket)\nสาขา: ${branch}\nประจำวันที่: ${today}\n---\n`;
+        const sortedBuckets = Object.keys(data.buckets).sort();
+        sortedBuckets.forEach(b => {
+            msg += `${b}: ${data.buckets[b].toLocaleString()} บาท\n`;
+        });
+        msg += `---\nยอดรวมทั้งหมด: ${data.total.toLocaleString()} บาท`;
+
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
     }
 </script>
