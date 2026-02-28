@@ -3,165 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collectio | สรุปยอดจัดเก็บ</title>
+    <title>Collectio Premium | สรุปยอดจัดเก็บ</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00b900; --dark: #1a1a1a; --bg: #f2f4f7; --card: #ffffff; }
-        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 20px 15px; }
+        :root {
+            --primary: #22c55e; --dark: #0f172a;
+            --b0: #22c55e; --b1: #eab308; --b2: #f97316;
+            --b3: #ef4444; --b4: #b91c1c; --b5: #7f1d1d;
+        }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);
+            background-attachment: fixed;
+            margin: 0; padding: 15px; min-height: 100vh;
+        }
         .container { max-width: 480px; margin: auto; }
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { margin: 0; font-size: 1.8rem; color: var(--dark); letter-spacing: 1px; }
-        .header p { margin: 5px 0 0; font-size: 0.9rem; color: #888; }
-        .card { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.02); }
-        h3 { margin: 0 0 18px 0; font-size: 0.95rem; font-weight: 600; color: #aaa; text-transform: uppercase; }
-        label { font-size: 0.8rem; font-weight: 600; color: #555; display: block; margin-bottom: 8px; }
-        select, input { width: 100%; border: 1.5px solid #eee; border-radius: 14px; padding: 12px; font-size: 1rem; box-sizing: border-box; font-family: 'Sarabun'; background: #fcfcfc; transition: 0.3s; }
-        input:focus { border-color: var(--primary); background: #fff; outline: none; }
-        .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 12px 0; }
-        .b-pad { padding: 10px 0; border: 1.5px solid #eee; border-radius: 12px; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; background: white; }
-        .b-pad.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,185,0,0.2); }
-        .item-list { border-top: 1px solid #f5f5f5; margin-top: 15px; }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
-        .item b { font-size: 1rem; color: var(--dark); }
-        .item-del { color: #ffbcbc; cursor: pointer; font-size: 1.2rem; padding-left: 15px; }
-        .btn { border: none; border-radius: 16px; padding: 16px; width: 100%; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; margin-top: 10px; transition: 0.3s; font-size: 1rem; }
-        .btn-add { background: #f0fdf4; color: var(--primary); border: 1.5px dashed var(--primary); }
-        .btn-send { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(0,185,0,0.25); margin-top: 20px; }
-        .btn-daily { background: var(--dark); color: white; margin-top: 10px; }
-        .summary-box { margin-top: 15px; display: flex; justify-content: space-between; align-items: baseline; }
-        .summary-box span { font-size: 1.4rem; font-weight: bold; color: var(--primary); }
+
+        /* Glassmorphism Card */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            padding: 20px; margin-bottom: 15px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--dark); color: white; border-radius: 20px; padding: 15px 20px;
+        }
+        .dash-label { font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; }
+        .dash-value { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+
+        .header h1 { margin: 15px 0 5px; font-size: 1.6rem; text-align: center; color: var(--dark); }
+        .header p { margin-bottom: 20px; font-size: 0.85rem; text-align: center; color: #666; }
+
+        label { font-size: 0.8rem; font-weight: 600; color: #444; display: block; margin: 10px 0 5px; }
+        select, input {
+            width: 100%; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 12px;
+            font-size: 1rem; box-sizing: border-box; font-family: 'Sarabun'; background: rgba(255,255,255,0.5);
+        }
+
+        /* Quick Date Buttons */
+        .quick-date { display: flex; gap: 8px; margin-top: 5px; }
+        .date-btn { 
+            flex: 1; padding: 6px; font-size: 0.75rem; border-radius: 8px; border: none; 
+            background: rgba(0,0,0,0.05); cursor: pointer;
+        }
+
+        .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 10px 0; }
+        .b-pad {
+            padding: 10px 0; border-radius: 12px; text-align: center; border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer; font-size: 0.8rem; font-weight: 600; background: white; transition: 0.2s;
+        }
+        .b-pad.active { color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .b-pad[data-b="B0"].active { background: var(--b0); }
+        .b-pad[data-b="B1"].active { background: var(--b1); }
+        .b-pad[data-b="B2"].active { background: var(--b2); }
+        .b-pad[data-b="B3"].active { background: var(--b3); }
+        .b-pad[data-b="B4"].active { background: var(--b4); }
+        .b-pad[data-b="B5"].active { background: var(--b5); }
+
+        /* Animated List */
+        .item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; margin-bottom: 8px; border-radius: 14px;
+            animation: slideIn 0.3s ease-out; background: white;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .item b { font-size: 0.95rem; }
+        .item-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-edit { color: #3b82f6; font-size: 0.8rem; cursor: pointer; }
+        .btn-del { color: #f87171; font-size: 1.1rem; cursor: pointer; }
+
+        .btn {
+            border: none; border-radius: 16px; padding: 15px; width: 100%;
+            font-weight: 600; cursor: pointer; font-family: 'Sarabun'; transition: 0.2s;
+        }
+        .btn-add { background: var(--dark); color: white; margin-top: 15px; }
+        .btn-send { background: var(--primary); color: white; margin-top: 15px; font-size: 1.1rem; }
+        .btn-tool { background: white; color: var(--dark); border: 1px solid #ddd; margin-top: 10px; font-size: 0.9rem; }
+        .btn:active { transform: scale(0.96); }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="dashboard glass">
+        <div><div class="dash-label">ยอดจัดเก็บวันนี้</div><div class="dash-value" id="dash-total">0</div></div>
+        <div style="text-align:right"><div class="dash-label">สาขา</div><div id="dash-branch" style="font-size:0.9rem; font-weight:600;">-</div></div>
+    </div>
+
     <div class="header">
-        <h1>Collectio</h1>
-        <p>สรุปยอดจัดเก็บหนี้รายวัน</p>
+        <h1>Collectio <span style="font-weight:300">Premium</span></h1>
+        <p>Debt Collection Management System</p>
     </div>
 
-    <div class="card">
-        <label>เลือกสาขาปฏิบัติงาน</label>
-        <select id="branch">
-            <option>สาขาเขาช่องพราน</option><option>สาขานางแก้ว</option><option>สาขาจอมบึง</option>
-            <option>สาขาดอนตูมราชบุรี</option><option>สาขาสวนผึ้ง</option><option>สาขาบ้านคา</option>
-            <option>สาขาด่านทับตะโก</option><option>สาขาหุบกระทิง</option><option>สาขาชัฎป่าหวาย</option>
-            <option>สาขาหนองเสือ</option><option>สาขาท่ามะกา</option><option>สาขาลูกแก</option>
-            <option>สาขาหนองตากยา</option><option>สาขาท่าเรือ</option><option>สาขาตะคร้ำเอน</option>
+    <div class="glass">
+        <label>สาขาปฏิบัติงาน</label>
+        <select id="branch" onchange="updateDashBranch()">
+            <option>เขาช่องพราน</option><option>นางแก้ว</option><option>จอมบึง</option>
+            <option>ดอนตูม</option><option>สวนผึ้ง</option><option>บ้านคา</option>
+            <option>ด่านทับตะโก</option><option>หุบกระทิง</option><option>ชัฎป่าหวาย</option>
         </select>
-    </div>
 
-    <div class="card">
-        <h3>➕ รายการจัดเก็บ</h3>
-        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <div style="flex:1"><label>Due</label><input type="text" id="t-due" placeholder="4/2"></div>
-            <div style="flex:2"><label>ยอดหนี้ (บาท)</label><input type="number" id="t-amt" placeholder="0.00"></div>
+        <div style="display: flex; gap: 10px;">
+            <div style="flex:1">
+                <label>Due Date</label>
+                <input type="text" id="t-due" placeholder="4/2">
+                <div class="quick-date">
+                    <button class="date-btn" onclick="quickDate(0)">วันนี้</button>
+                    <button class="date-btn" onclick="quickDate(1)">พรุ่งนี้</button>
+                </div>
+            </div>
+            <div style="flex:2">
+                <label>ยอดหนี้ (บาท)</label>
+                <input type="number" id="t-amt" placeholder="0.00" style="font-size:1.2rem; font-weight:bold;">
+            </div>
         </div>
+
         <label>Bucket</label>
         <div class="bucket-grid">
-            <div class="b-pad active" onclick="setB(this)">B0</div>
-            <div class="b-pad" onclick="setB(this)">B1</div>
-            <div class="b-pad" onclick="setB(this)">B2</div>
-            <div class="b-pad" onclick="setB(this)">B3</div>
-            <div class="b-pad" onclick="setB(this)">B4</div>
-            <div class="b-pad" onclick="setB(this)">B5</div>
+            <div class="b-pad active" data-b="B0" onclick="setB(this)">B0</div>
+            <div class="b-pad" data-b="B1" onclick="setB(this)">B1</div>
+            <div class="b-pad" data-b="B2" onclick="setB(this)">B2</div>
+            <div class="b-pad" data-b="B3" onclick="setB(this)">B3</div>
+            <div class="b-pad" data-b="B4" onclick="setB(this)">B4</div>
+            <div class="b-pad" data-b="B5" onclick="setB(this)">B5</div>
         </div>
+
         <label>เลขที่สัญญา</label>
         <input type="text" id="t-cnt" placeholder="ระบุเลขที่สัญญา">
-        <button class="btn btn-add" onclick="addItem()">เพิ่มลงรายการ</button>
+        <button class="btn btn-add" id="main-btn" onclick="addItem()">เพิ่มลงรายการ</button>
     </div>
 
-    <div class="card" id="list-card" style="display:none;">
-        <h3>📋 รายการเตรียมส่ง</h3>
-        <div id="final-list" class="item-list"></div>
-        <div class="summary-box">
-            <small style="color:#999">ยอดรวมรอบนี้:</small>
-            <span><span id="g-total">0</span> <small style="font-size:0.8rem">บาท</small></span>
+    <div id="list-card" style="display:none;">
+        <div class="glass">
+            <h3 id="list-title">📋 รายการปัจจุบัน</h3>
+            <div id="final-list"></div>
+            <button class="btn btn-send" onclick="sendLine()">🚀 ส่งข้อมูลเข้า LINE</button>
         </div>
-        <button class="btn btn-send" onclick="sendLine()">ส่งเข้า LINE</button>
     </div>
 
-    <button class="btn btn-daily" onclick="sendDailySummary()">📊 สรุปยอดรวมวันนี้</button>
+    <button class="btn btn-tool" onclick="copySummary()">📋 คัดลอกสรุปยอดวันนี้</button>
+    <button class="btn btn-tool" onclick="sendDailySummary()" style="background:var(--dark); color:white;">📊 ส่งสรุปยอดแยก Bucket</button>
 </div>
 
 <script>
-    let currentB = "B0";
-    let items = [];
+    let currentB = "B0", items = [], editingId = null;
+
+    // ระบบสั่นเบาๆ
+    const haptic = () => { if(window.navigator.vibrate) window.navigator.vibrate(10); };
+
+    function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
 
     function setB(el) {
+        haptic();
         document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
-        currentB = el.innerText;
+        currentB = el.dataset.b;
+    }
+
+    function quickDate(offset) {
+        const d = new Date();
+        d.setDate(d.getDate() + offset);
+        document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth()+1}`;
     }
 
     function addItem() {
-        const due = document.getElementById('t-due').value || '-';
-        const amt = parseFloat(document.getElementById('t-amt').value) || 0;
-        const cnt = document.getElementById('t-cnt').value || '-';
-        if(amt <= 0) return;
-        items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
+        haptic();
+        const due = document.getElementById('t-due').value.trim();
+        const amt = parseFloat(document.getElementById('t-amt').value);
+        const cnt = document.getElementById('t-cnt').value.trim();
+
+        if (!due || !amt || !cnt) return alert("กรุณาลงข้อมูลให้ครบ");
+
+        if(editingId) {
+            items = items.map(i => i.id === editingId ? {...i, due, amt, cnt, bkt: currentB} : i);
+            editingId = null;
+            document.getElementById('main-btn').innerText = "เพิ่มลงรายการ";
+            document.getElementById('main-btn').style.background = "var(--dark)";
+        } else {
+            items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
+        }
+        
         render();
-        document.getElementById('t-amt').value = '';
-        document.getElementById('t-cnt').value = '';
+        document.getElementById('t-amt').value = ''; document.getElementById('t-cnt').value = '';
     }
 
     function render() {
-        const listCard = document.getElementById('list-card');
         const container = document.getElementById('final-list');
-        listCard.style.display = items.length ? 'block' : 'none';
+        document.getElementById('list-card').style.display = items.length ? 'block' : 'none';
+
         container.innerHTML = items.map(i => `
-            <div class="item">
+            <div class="item" style="border-left: 5px solid var(--${i.bkt.toLowerCase()})">
                 <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
-                <div style="text-align:right"><b>${i.amt.toLocaleString()}</b><span class="item-del" onclick="remove(${i.id})">✕</span></div>
+                <div class="item-actions">
+                    <b style="color:var(--dark)">${i.amt.toLocaleString()}</b>
+                    <span class="btn-edit" onclick="editItem(${i.id})">แก้ไข</span>
+                    <span class="btn-del" onclick="removeItem(${i.id})">✕</span>
+                </div>
             </div>
         `).join('');
-        const total = items.reduce((s, i) => s + i.amt, 0);
-        document.getElementById('g-total').innerText = total.toLocaleString();
+        updateDashTotal();
     }
 
-    function remove(id) { items = items.filter(i => i.id !== id); render(); }
+    function editItem(id) {
+        const i = items.find(x => x.id === id);
+        document.getElementById('t-due').value = i.due;
+        document.getElementById('t-amt').value = i.amt;
+        document.getElementById('t-cnt').value = i.cnt;
+        editingId = id;
+        document.getElementById('main-btn').innerText = "💾 บันทึกการแก้ไข";
+        document.getElementById('main-btn').style.background = "#3b82f6";
+        window.scrollTo(0,0);
+    }
+
+    function removeItem(id) { items = items.filter(i => i.id !== id); render(); }
 
     function sendLine() {
+        haptic();
         const branch = document.getElementById('branch').value;
-        let msg = branch + "\n";
-        let batchTotal = 0;
-        let batchStats = {};
-
+        let msg = `สาขา: ${branch}\n`, total = 0, stats = {};
         items.forEach(i => {
             msg += `Due ${i.due} (${i.bkt})\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
-            batchTotal += i.amt;
-            batchStats[i.bkt] = (batchStats[i.bkt] || 0) + i.amt;
+            total += i.amt;
+            stats[i.bkt] = (stats[i.bkt] || 0) + i.amt;
         });
-        msg += `รวม ${batchTotal.toLocaleString()} บาท`;
-
-        saveToDaily(batchTotal, batchStats);
+        msg += `รวม ${total.toLocaleString()} บาท`;
+        saveDaily(total, stats);
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
         items = []; render();
     }
 
-    function saveToDaily(totalAmt, stats) {
+    function saveDaily(amt, stats) {
         const today = new Date().toLocaleDateString();
-        let daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}');
+        let daily = JSON.parse(localStorage.getItem('collectio_v2') || '{}');
         if (!daily[today]) daily[today] = { total: 0, buckets: {} };
-        daily[today].total += totalAmt;
-        for (let b in stats) { daily[today].buckets[b] = (daily[today].buckets[b] || 0) + stats[b]; }
-        localStorage.setItem('collectio_daily', JSON.stringify(daily));
+        daily[today].total += amt;
+        for (let b in stats) daily[today].buckets[b] = (daily[today].buckets[b] || 0) + stats[b];
+        localStorage.setItem('collectio_v2', JSON.stringify(daily));
+        updateDashTotal();
     }
 
-    function sendDailySummary() {
+    function updateDashTotal() {
         const today = new Date().toLocaleDateString();
-        const branch = document.getElementById('branch').value;
-        const daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}');
-        const data = daily[today];
-        if (!data || data.total === 0) return alert("ยังไม่มียอดจัดเก็บของวันนี้");
-
-        let msg = `📊 สรุปยอดจัดเก็บประจำวัน\nสาขา: ${branch}\nประจำวันที่: ${today}\n---\n`;
-        const sortedBuckets = Object.keys(data.buckets).sort();
-        sortedBuckets.forEach(b => { msg += `${b}: ${data.buckets[b].toLocaleString()} บาท\n`; });
-        msg += `---\nยอดรวมทั้งหมด: ${data.total.toLocaleString()} บาท`;
-
-        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
+        const daily = JSON.parse(localStorage.getItem('collectio_daily') || '{}'); // Compatible with old version
+        const v2 = JSON.parse(localStorage.getItem('collectio_v2') || '{}');
+        const total = (v2[today]?.total || 0);
+        document.getElementById('dash-total').innerText = total.toLocaleString();
     }
+
+    async function copySummary() {
+        const msg = getSummaryText();
+        await navigator.clipboard.writeText(msg);
+        alert("คัดลอกสรุปยอดลง Clipboard แล้ว!");
+    }
+
+    function getSummaryText() {
+        const today = new Date().toLocaleDateString();
+        const daily = JSON.parse(localStorage.getItem('collectio_v2') || '{}')[today];
+        if(!daily) return "ยังไม่มีข้อมูลวันนี้";
+        let msg = `📊 สรุปยอดจัดเก็บ (${document.getElementById('branch').value})\nวันที่: ${today}\n---\n`;
+        Object.keys(daily.buckets).sort().forEach(b => msg += `${b}: ${daily.buckets[b].toLocaleString()} บาท\n`);
+        msg += `รวมทั้งหมด: ${daily.total.toLocaleString()} บาท`;
+        return msg;
+    }
+
+    function sendDailySummary() { window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(getSummaryText()); }
+
+    // Auto Reset & Init
+    setInterval(() => { if(new Date().getHours() === 0 && new Date().getMinutes() === 0) localStorage.removeItem('collectio_v2'); }, 60000);
+    updateDashBranch(); updateDashTotal();
 </script>
 </body>
 </html>
