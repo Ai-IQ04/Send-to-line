@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collectio | Daily Dashboard</title>
+    <title>Collectio | Pro Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,13 +24,17 @@
             box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1); padding: 20px; margin-bottom: 15px;
         }
         
-        /* Dashboard แบบใหม่ - เน้นยอดวันนี้ */
-        .dashboard { 
-            background: var(--dark); color: white; border-radius: 20px; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .dash-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px; }
-        .dash-value { font-size: 1.6rem; font-weight: bold; color: var(--primary); }
+        /* Dashboard Pro */
+        .dashboard { background: var(--dark); color: white; border-radius: 20px; padding: 18px; }
+        .main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .dash-label { font-size: 0.75rem; opacity: 0.7; }
+        .dash-value { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+        
+        /* Mini Summary */
+        .mini-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
+        .mini-box { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; }
+        .mini-tag { font-size: 0.65rem; text-transform: uppercase; margin-bottom: 2px; }
+        .mini-amt { font-size: 1rem; font-weight: 600; }
 
         label { font-size: 0.8rem; font-weight: 600; color: #444; display: block; margin: 10px 0 5px; }
         select, input {
@@ -39,6 +43,7 @@
         }
         .quick-date { display: flex; gap: 8px; margin-top: 5px; }
         .date-btn { flex: 1; padding: 6px; font-size: 0.75rem; border-radius: 8px; border: none; background: rgba(0,0,0,0.05); cursor: pointer;}
+        
         .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 10px 0; }
         .b-pad { padding: 10px 0; border-radius: 12px; text-align: center; border: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-size: 0.8rem; font-weight: 600; background: white; }
         .b-pad.active { color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -49,31 +54,44 @@
         .b-pad[data-b="B4"].active { background: var(--b4); }
         .b-pad[data-b="B5"].active { background: var(--b5); }
 
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 14px; background: white; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 14px; background: white; border-left: 5px solid #ddd; }
         
-        .btn { border: none; border-radius: 16px; padding: 15px; width: 100%; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; transition: 0.2s; margin-top: 10px; }
+        .btn-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 10px; }
+        .btn { border: none; border-radius: 16px; padding: 15px; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; transition: 0.2s; }
         .btn-add { background: var(--dark); color: white; }
-        .btn-send { background: var(--primary); color: white; font-size: 1.1rem; }
-        .btn-tool { background: white; color: var(--dark); border: 1px solid #ddd; font-size: 0.9rem; }
+        .btn-undo { background: #f1f5f9; color: #64748b; font-size: 0.8rem; }
+        .btn-send { background: var(--primary); color: white; width: 100%; margin-top: 15px; font-size: 1.1rem; }
+        .btn-tool { background: white; color: var(--dark); border: 1px solid #ddd; width: 100%; margin-top: 10px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="dashboard glass">
-        <div>
-            <div class="dash-label">ยอดจัดเก็บสะสมวันนี้</div>
-            <div class="dash-value" id="dash-total">0</div>
+        <div class="main-row">
+            <div>
+                <div class="dash-label">ยอดเก็บสะสมวันนี้ (รวม)</div>
+                <div class="dash-value" id="dash-total">0</div>
+            </div>
+            <div style="text-align:right">
+                <div class="dash-label">สาขา</div>
+                <div id="dash-branch" style="font-weight:600;">-</div>
+            </div>
         </div>
-        <div style="text-align:right">
-            <div class="dash-label">สาขา</div>
-            <div id="dash-branch" style="font-weight:600; font-size: 1rem;">-</div>
+        <div class="mini-summary">
+            <div class="mini-box">
+                <div class="mini-tag" style="color:var(--b0)">● ยอด B0</div>
+                <div class="mini-amt" id="mini-b0">0</div>
+            </div>
+            <div class="mini-box">
+                <div class="mini-tag" style="color:var(--b1)">● ยอด B1</div>
+                <div class="mini-amt" id="mini-b1">0</div>
+            </div>
         </div>
     </div>
 
     <div class="glass">
-        <label>เลือกสาขาปฏิบัติงาน</label>
+        <label>สาขาปฏิบัติงาน</label>
         <select id="branch" onchange="updateDashBranch()">
             <option>สาขาเขาช่องพราน</option><option>สาขานางแก้ว</option><option>สาขาจอมบึง</option>
             <option>สาขาดอนตูมราชบุรี</option><option>สาขาสวนผึ้ง</option><option>สาขาบ้านคา</option>
@@ -94,7 +112,11 @@
 
         <label>เลขที่สัญญา</label>
         <input type="text" id="t-cnt" placeholder="ระบุเลขที่สัญญา">
-        <button class="btn btn-add" id="main-btn" onclick="addItem()">เพิ่มลงรายการ</button>
+        
+        <div class="btn-group">
+            <button class="btn btn-add" id="main-btn" onclick="addItem()">เพิ่มลงรายการ</button>
+            <button class="btn btn-undo" id="undo-btn" onclick="undoItem()" style="display:none;">↩️ Undo</button>
+        </div>
     </div>
 
     <div id="list-card" style="display:none;">
@@ -115,42 +137,42 @@
     const haptic = () => { if(window.navigator.vibrate) window.navigator.vibrate(10); };
 
     function setB(el) { haptic(); document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active')); el.classList.add('active'); currentB = el.dataset.b; }
-    function quickDate(offset) { const d = new Date(); d.setDate(d.getDate() + offset); document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth()+1}`; }
+    function quickDate(offset) { haptic(); const d = new Date(); d.setDate(d.getDate() + offset); document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth()+1}`; }
     function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
 
     function addItem() {
         haptic();
         const due = document.getElementById('t-due').value, amt = parseFloat(document.getElementById('t-amt').value), cnt = document.getElementById('t-cnt').value;
         if (!due || !amt || !cnt) return alert("ข้อมูลไม่ครบ");
+        items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
+        render(); 
+        document.getElementById('t-amt').value = ''; 
+        document.getElementById('t-cnt').value = '';
+        document.getElementById('undo-btn').style.display = 'block';
+    }
 
-        if(editingId) {
-            items = items.map(i => i.id === editingId ? {...i, due, amt, cnt, bkt: currentB} : i);
-            editingId = null; document.getElementById('main-btn').innerText = "เพิ่มลงรายการ";
-        } else {
-            items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
+    function undoItem() {
+        haptic();
+        if(items.length > 0) {
+            items.pop();
+            render();
+            if(items.length === 0) document.getElementById('undo-btn').style.display = 'none';
         }
-        render(); document.getElementById('t-amt').value = ''; document.getElementById('t-cnt').value = '';
     }
 
     function render() {
         const container = document.getElementById('final-list');
         document.getElementById('list-card').style.display = items.length ? 'block' : 'none';
         container.innerHTML = items.map(i => `
-            <div class="item" style="border-left: 5px solid var(--${i.bkt.toLowerCase()})">
+            <div class="item" style="border-left-color: var(--${i.bkt.toLowerCase()})">
                 <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
-                <div style="text-align:right"><b>${i.amt.toLocaleString()}</b><br><span style="color:#3b82f6; font-size:0.7rem;" onclick="editItem(${i.id})">แก้ไข</span></div>
+                <div style="text-align:right"><b>${i.amt.toLocaleString()}</b></div>
             </div>
         `).join('');
     }
 
-    function editItem(id) {
-        const i = items.find(x => x.id === id);
-        document.getElementById('t-due').value = i.due; document.getElementById('t-amt').value = i.amt; document.getElementById('t-cnt').value = i.cnt;
-        editingId = id; document.getElementById('main-btn').innerText = "💾 บันทึกแก้ไข";
-        window.scrollTo(0,0);
-    }
-
     function sendLine() {
+        haptic();
         const branch = document.getElementById('branch').value;
         let msg = `สาขา: ${branch}\n`, total = 0, stats = {};
         items.forEach(i => {
@@ -162,27 +184,32 @@
         saveHistory(total, stats);
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
         items = []; render();
+        document.getElementById('undo-btn').style.display = 'none';
     }
 
     function saveHistory(amt, stats) {
         const today = new Date().toLocaleDateString();
-        let history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}');
+        let history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}');
         if (!history[today]) history[today] = { total: 0, buckets: {} };
         history[today].total += amt;
         for (let b in stats) history[today].buckets[b] = (history[today].buckets[b] || 0) + stats[b];
-        localStorage.setItem('collectio_daily_v5', JSON.stringify(history));
+        localStorage.setItem('collectio_daily_v6', JSON.stringify(history));
         updateDashboard();
     }
 
     function updateDashboard() {
         const today = new Date().toLocaleDateString();
-        const history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}')[today] || {total:0};
+        const history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}')[today] || {total:0, buckets:{}};
+        
         document.getElementById('dash-total').innerText = history.total.toLocaleString();
+        document.getElementById('mini-b0').innerText = (history.buckets['B0'] || 0).toLocaleString();
+        document.getElementById('mini-b1').innerText = (history.buckets['B1'] || 0).toLocaleString();
     }
 
     function sendDailySummary() {
+        haptic();
         const today = new Date().toLocaleDateString();
-        const history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}')[today];
+        const history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}')[today];
         if(!history) return alert("ไม่มีข้อมูลวันนี้");
         let msg = `📊 สรุปยอดสะสม (${document.getElementById('branch').value})\nวันที่: ${today}\n---\n`;
         Object.keys(history.buckets).sort().forEach(b => msg += `${b}: ${history.buckets[b].toLocaleString()} ฿\n`);
@@ -191,11 +218,12 @@
     }
 
     function confirmReset() { 
+        haptic();
         if(confirm("ล้างข้อมูลยอดจัดเก็บของวันนี้ทั้งหมดใช่หรือไม่?")) { 
             const today = new Date().toLocaleDateString();
-            let history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}');
+            let history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}');
             delete history[today];
-            localStorage.setItem('collectio_daily_v5', JSON.stringify(history));
+            localStorage.setItem('collectio_daily_v6', JSON.stringify(history));
             updateDashboard(); 
         } 
     }
