@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collectio Ultimate | Monthly Tracking</title>
+    <title>Collectio | Daily Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -23,17 +23,14 @@
             border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1); padding: 20px; margin-bottom: 15px;
         }
-        .dashboard { background: var(--dark); color: white; border-radius: 20px; padding: 20px; }
-        .dash-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
-        .dash-label { font-size: 0.75rem; opacity: 0.7; }
-        .dash-value { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
         
-        /* Monthly Goal Section */
-        .monthly-section { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .goal-item { margin-bottom: 10px; }
-        .goal-header { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 4px; }
-        .progress-container { background: rgba(255,255,255,0.1); height: 6px; border-radius: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; transition: 0.5s; width: 0%; }
+        /* Dashboard แบบใหม่ - เน้นยอดวันนี้ */
+        .dashboard { 
+            background: var(--dark); color: white; border-radius: 20px; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .dash-label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 4px; }
+        .dash-value { font-size: 1.6rem; font-weight: bold; color: var(--primary); }
 
         label { font-size: 0.8rem; font-weight: 600; color: #444; display: block; margin: 10px 0 5px; }
         select, input {
@@ -65,25 +62,18 @@
 
 <div class="container">
     <div class="dashboard glass">
-        <div class="dash-row">
-            <div><div class="dash-label">ยอดสะสมเดือนนี้ (฿)</div><div class="dash-value" id="dash-month-total">0</div></div>
-            <div style="text-align:right"><div class="dash-label">สาขา</div><div id="dash-branch" style="font-weight:600;">-</div></div>
+        <div>
+            <div class="dash-label">ยอดจัดเก็บสะสมวันนี้</div>
+            <div class="dash-value" id="dash-total">0</div>
         </div>
-
-        <div class="monthly-section">
-            <div class="goal-item" onclick="setGoal('B0')">
-                <div class="goal-header"><span>เป้าหมาย B0: <b id="text-goal-b0">0</b></span><span id="pct-b0">0%</span></div>
-                <div class="progress-container"><div class="progress-bar" id="bar-b0" style="background:var(--b0)"></div></div>
-            </div>
-            <div class="goal-item" onclick="setGoal('B1')">
-                <div class="goal-header"><span>เป้าหมาย B1: <b id="text-goal-b1">0</b></span><span id="pct-b1">0%</span></div>
-                <div class="progress-container"><div class="progress-bar" id="bar-b1" style="background:var(--b1)"></div></div>
-            </div>
+        <div style="text-align:right">
+            <div class="dash-label">สาขา</div>
+            <div id="dash-branch" style="font-weight:600; font-size: 1rem;">-</div>
         </div>
     </div>
 
     <div class="glass">
-        <label>สาขาปฏิบัติงาน</label>
+        <label>เลือกสาขาปฏิบัติงาน</label>
         <select id="branch" onchange="updateDashBranch()">
             <option>สาขาเขาช่องพราน</option><option>สาขานางแก้ว</option><option>สาขาจอมบึง</option>
             <option>สาขาดอนตูมราชบุรี</option><option>สาขาสวนผึ้ง</option><option>สาขาบ้านคา</option>
@@ -124,15 +114,6 @@
 
     const haptic = () => { if(window.navigator.vibrate) window.navigator.vibrate(10); };
 
-    function setGoal(bkt) {
-        let currentGoal = localStorage.getItem(`monthly_goal_${bkt}`) || 0;
-        let g = prompt(`ระบุเป้าหมายเดือนสำหรับ ${bkt} (บาท):`, currentGoal);
-        if(g !== null) { 
-            localStorage.setItem(`monthly_goal_${bkt}`, g); 
-            updateDashboard(); 
-        }
-    }
-
     function setB(el) { haptic(); document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active')); el.classList.add('active'); currentB = el.dataset.b; }
     function quickDate(offset) { const d = new Date(); d.setDate(d.getDate() + offset); document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth()+1}`; }
     function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
@@ -141,6 +122,7 @@
         haptic();
         const due = document.getElementById('t-due').value, amt = parseFloat(document.getElementById('t-amt').value), cnt = document.getElementById('t-cnt').value;
         if (!due || !amt || !cnt) return alert("ข้อมูลไม่ครบ");
+
         if(editingId) {
             items = items.map(i => i.id === editingId ? {...i, due, amt, cnt, bkt: currentB} : i);
             editingId = null; document.getElementById('main-btn').innerText = "เพิ่มลงรายการ";
@@ -184,50 +166,23 @@
 
     function saveHistory(amt, stats) {
         const today = new Date().toLocaleDateString();
-        let history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}');
+        let history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}');
         if (!history[today]) history[today] = { total: 0, buckets: {} };
         history[today].total += amt;
         for (let b in stats) history[today].buckets[b] = (history[today].buckets[b] || 0) + stats[b];
-        localStorage.setItem('collectio_history_v4', JSON.stringify(history));
+        localStorage.setItem('collectio_daily_v5', JSON.stringify(history));
         updateDashboard();
     }
 
     function updateDashboard() {
-        const now = new Date();
-        const monthKey = `/${now.getMonth()+1}/${now.getFullYear()}`;
-        const history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}');
-        
-        let monthTotal = 0, monthB0 = 0, monthB1 = 0;
-
-        // รวมยอดเฉพาะในเดือนปัจจุบัน
-        for (let date in history) {
-            if (date.endsWith(monthKey)) {
-                monthTotal += history[date].total;
-                monthB0 += (history[date].buckets['B0'] || 0);
-                monthB1 += (history[date].buckets['B1'] || 0);
-            }
-        }
-
-        document.getElementById('dash-month-total').innerText = monthTotal.toLocaleString();
-        
-        // Update B0 Goal
-        const goalB0 = localStorage.getItem('monthly_goal_B0') || 0;
-        document.getElementById('text-goal-b0').innerText = parseInt(goalB0).toLocaleString();
-        const pctB0 = goalB0 > 0 ? Math.min((monthB0 / goalB0) * 100, 100) : 0;
-        document.getElementById('bar-b0').style.width = pctB0 + "%";
-        document.getElementById('pct-b0').innerText = Math.round(pctB0) + "%";
-
-        // Update B1 Goal
-        const goalB1 = localStorage.getItem('monthly_goal_B1') || 0;
-        document.getElementById('text-goal-b1').innerText = parseInt(goalB1).toLocaleString();
-        const pctB1 = goalB1 > 0 ? Math.min((monthB1 / goalB1) * 100, 100) : 0;
-        document.getElementById('bar-b1').style.width = pctB1 + "%";
-        document.getElementById('pct-b1').innerText = Math.round(pctB1) + "%";
+        const today = new Date().toLocaleDateString();
+        const history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}')[today] || {total:0};
+        document.getElementById('dash-total').innerText = history.total.toLocaleString();
     }
 
     function sendDailySummary() {
         const today = new Date().toLocaleDateString();
-        const history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}')[today];
+        const history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}')[today];
         if(!history) return alert("ไม่มีข้อมูลวันนี้");
         let msg = `📊 สรุปยอดสะสม (${document.getElementById('branch').value})\nวันที่: ${today}\n---\n`;
         Object.keys(history.buckets).sort().forEach(b => msg += `${b}: ${history.buckets[b].toLocaleString()} ฿\n`);
@@ -236,11 +191,11 @@
     }
 
     function confirmReset() { 
-        const today = new Date().toLocaleDateString();
-        if(confirm(`ล้างข้อมูลยอดสะสมของวันนี้ (${today}) ใช่หรือไม่?\n(ข้อมูลวันอื่นและเป้าหมายเดือนจะไม่หาย)`)) { 
-            let history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}');
+        if(confirm("ล้างข้อมูลยอดจัดเก็บของวันนี้ทั้งหมดใช่หรือไม่?")) { 
+            const today = new Date().toLocaleDateString();
+            let history = JSON.parse(localStorage.getItem('collectio_daily_v5') || '{}');
             delete history[today];
-            localStorage.setItem('collectio_history_v4', JSON.stringify(history));
+            localStorage.setItem('collectio_daily_v5', JSON.stringify(history));
             updateDashboard(); 
         } 
     }
