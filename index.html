@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collectio Ultimate | 15 Branches</title>
+    <title>Collectio Ultimate | Monthly Tracking</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -26,9 +26,14 @@
         .dashboard { background: var(--dark); color: white; border-radius: 20px; padding: 20px; }
         .dash-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .dash-label { font-size: 0.75rem; opacity: 0.7; }
-        .dash-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-        .progress-container { background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; }
-        .progress-bar { background: var(--primary); height: 100%; width: 0%; transition: 0.5s; }
+        .dash-value { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+        
+        /* Monthly Goal Section */
+        .monthly-section { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .goal-item { margin-bottom: 10px; }
+        .goal-header { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 4px; }
+        .progress-container { background: rgba(255,255,255,0.1); height: 6px; border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: 0.5s; width: 0%; }
 
         label { font-size: 0.8rem; font-weight: 600; color: #444; display: block; margin: 10px 0 5px; }
         select, input {
@@ -47,10 +52,6 @@
         .b-pad[data-b="B4"].active { background: var(--b4); }
         .b-pad[data-b="B5"].active { background: var(--b5); }
 
-        .pay-type { display: flex; gap: 10px; margin-top: 10px; }
-        .pay-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #ddd; background: white; font-size: 0.85rem; cursor: pointer; }
-        .pay-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
-
         .item { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 14px; background: white; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -63,32 +64,32 @@
 <body>
 
 <div class="container">
-    <div class="dashboard glass" onclick="setGoal()">
+    <div class="dashboard glass">
         <div class="dash-row">
-            <div><div class="dash-label">ยอดจัดเก็บวันนี้ (฿)</div><div class="dash-value" id="dash-total">0</div></div>
-            <div style="text-align:right"><div class="dash-label">เป้าหมาย: <span id="goal-text">0</span></div><div id="dash-branch" style="font-weight:600;">-</div></div>
+            <div><div class="dash-label">ยอดสะสมเดือนนี้ (฿)</div><div class="dash-value" id="dash-month-total">0</div></div>
+            <div style="text-align:right"><div class="dash-label">สาขา</div><div id="dash-branch" style="font-weight:600;">-</div></div>
         </div>
-        <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+
+        <div class="monthly-section">
+            <div class="goal-item" onclick="setGoal('B0')">
+                <div class="goal-header"><span>เป้าหมาย B0: <b id="text-goal-b0">0</b></span><span id="pct-b0">0%</span></div>
+                <div class="progress-container"><div class="progress-bar" id="bar-b0" style="background:var(--b0)"></div></div>
+            </div>
+            <div class="goal-item" onclick="setGoal('B1')">
+                <div class="goal-header"><span>เป้าหมาย B1: <b id="text-goal-b1">0</b></span><span id="pct-b1">0%</span></div>
+                <div class="progress-container"><div class="progress-bar" id="bar-b1" style="background:var(--b1)"></div></div>
+            </div>
+        </div>
     </div>
 
     <div class="glass">
-        <label>เลือกสาขาปฏิบัติงาน (15 สาขา)</label>
+        <label>สาขาปฏิบัติงาน</label>
         <select id="branch" onchange="updateDashBranch()">
-            <option>สาขาเขาช่องพราน</option>
-            <option>สาขานางแก้ว</option>
-            <option>สาขาจอมบึง</option>
-            <option>สาขาดอนตูมราชบุรี</option>
-            <option>สาขาสวนผึ้ง</option>
-            <option>สาขาบ้านคา</option>
-            <option>สาขาด่านทับตะโก</option>
-            <option>สาขาหุบกระทิง</option>
-            <option>สาขาชัฎป่าหวาย</option>
-            <option>สาขาหนองเสือ</option>
-            <option>สาขาท่ามะกา</option>
-            <option>สาขาลูกแก</option>
-            <option>สาขาหนองตากยา</option>
-            <option>สาขาท่าเรือ</option>
-            <option>สาขาตะคร้ำเอน</option>
+            <option>สาขาเขาช่องพราน</option><option>สาขานางแก้ว</option><option>สาขาจอมบึง</option>
+            <option>สาขาดอนตูมราชบุรี</option><option>สาขาสวนผึ้ง</option><option>สาขาบ้านคา</option>
+            <option>สาขาด่านทับตะโก</option><option>สาขาหุบกระทิง</option><option>สาขาชัฎป่าหวาย</option>
+            <option>สาขาหนองเสือ</option><option>สาขาท่ามะกา</option><option>สาขาลูกแก</option>
+            <option>สาขาหนองตากยา</option><option>สาขาท่าเรือ</option><option>สาขาตะคร้ำเอน</option>
         </select>
 
         <div style="display: flex; gap: 10px;">
@@ -99,12 +100,6 @@
         <label>Bucket</label>
         <div class="bucket-grid">
             <div class="b-pad active" data-b="B0" onclick="setB(this)">B0</div><div class="b-pad" data-b="B1" onclick="setB(this)">B1</div><div class="b-pad" data-b="B2" onclick="setB(this)">B2</div><div class="b-pad" data-b="B3" onclick="setB(this)">B3</div><div class="b-pad" data-b="B4" onclick="setB(this)">B4</div><div class="b-pad" data-b="B5" onclick="setB(this)">B5</div>
-        </div>
-
-        <label>ช่องทางการชำระ</label>
-        <div class="pay-type">
-            <button class="pay-btn active" onclick="setPay(this, 'โอน')">🏧 เงินโอน</button>
-            <button class="pay-btn" onclick="setPay(this, 'เงินสด')">💵 เงินสด</button>
         </div>
 
         <label>เลขที่สัญญา</label>
@@ -121,21 +116,24 @@
     </div>
 
     <button class="btn btn-tool" onclick="sendDailySummary()">📊 ส่งสรุปยอดวันนี้ (แยก Bucket)</button>
-    <button class="btn btn-tool" onclick="confirmReset()" style="color:#ef4444; border-color:#fecaca;">⚠️ ล้างข้อมูลวันนี้</button>
+    <button class="btn btn-tool" onclick="confirmReset()" style="color:#ef4444; border-color:#fecaca;">⚠️ ล้างข้อมูลเฉพาะของวันนี้</button>
 </div>
 
 <script>
-    let currentB = "B0", currentPay = "โอน", items = [], editingId = null, dailyGoal = localStorage.getItem('daily_goal') || 50000;
+    let currentB = "B0", items = [], editingId = null;
 
     const haptic = () => { if(window.navigator.vibrate) window.navigator.vibrate(10); };
 
-    function setGoal() {
-        let g = prompt("ระบุเป้าหมายการจัดเก็บวันนี้ (บาท):", dailyGoal);
-        if(g) { dailyGoal = g; localStorage.setItem('daily_goal', g); updateDashTotal(); }
+    function setGoal(bkt) {
+        let currentGoal = localStorage.getItem(`monthly_goal_${bkt}`) || 0;
+        let g = prompt(`ระบุเป้าหมายเดือนสำหรับ ${bkt} (บาท):`, currentGoal);
+        if(g !== null) { 
+            localStorage.setItem(`monthly_goal_${bkt}`, g); 
+            updateDashboard(); 
+        }
     }
 
     function setB(el) { haptic(); document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active')); el.classList.add('active'); currentB = el.dataset.b; }
-    function setPay(el, type) { haptic(); document.querySelectorAll('.pay-btn').forEach(p => p.classList.remove('active')); el.classList.add('active'); currentPay = type; }
     function quickDate(offset) { const d = new Date(); d.setDate(d.getDate() + offset); document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth()+1}`; }
     function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
 
@@ -143,12 +141,11 @@
         haptic();
         const due = document.getElementById('t-due').value, amt = parseFloat(document.getElementById('t-amt').value), cnt = document.getElementById('t-cnt').value;
         if (!due || !amt || !cnt) return alert("ข้อมูลไม่ครบ");
-
         if(editingId) {
-            items = items.map(i => i.id === editingId ? {...i, due, amt, cnt, bkt: currentB, pay: currentPay} : i);
+            items = items.map(i => i.id === editingId ? {...i, due, amt, cnt, bkt: currentB} : i);
             editingId = null; document.getElementById('main-btn').innerText = "เพิ่มลงรายการ";
         } else {
-            items.push({ id: Date.now(), due, amt, cnt, bkt: currentB, pay: currentPay });
+            items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
         }
         render(); document.getElementById('t-amt').value = ''; document.getElementById('t-cnt').value = '';
     }
@@ -158,7 +155,7 @@
         document.getElementById('list-card').style.display = items.length ? 'block' : 'none';
         container.innerHTML = items.map(i => `
             <div class="item" style="border-left: 5px solid var(--${i.bkt.toLowerCase()})">
-                <div><b>${i.cnt}</b> (${i.pay})<br><small>Due ${i.due} (${i.bkt})</small></div>
+                <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
                 <div style="text-align:right"><b>${i.amt.toLocaleString()}</b><br><span style="color:#3b82f6; font-size:0.7rem;" onclick="editItem(${i.id})">แก้ไข</span></div>
             </div>
         `).join('');
@@ -175,48 +172,80 @@
         const branch = document.getElementById('branch').value;
         let msg = `สาขา: ${branch}\n`, total = 0, stats = {};
         items.forEach(i => {
-            msg += `Due ${i.due} (${i.bkt}) [${i.pay}]\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
+            msg += `Due ${i.due} (${i.bkt})\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
             total += i.amt;
             stats[i.bkt] = (stats[i.bkt] || 0) + i.amt;
         });
         msg += `รวม ${total.toLocaleString()} บาท`;
-        saveDaily(total, stats);
+        saveHistory(total, stats);
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
         items = []; render();
     }
 
-    function saveDaily(amt, stats) {
+    function saveHistory(amt, stats) {
         const today = new Date().toLocaleDateString();
-        let daily = JSON.parse(localStorage.getItem('collectio_v3') || '{}');
-        if (!daily[today]) daily[today] = { total: 0, buckets: {} };
-        daily[today].total += amt;
-        for (let b in stats) daily[today].buckets[b] = (daily[today].buckets[b] || 0) + stats[b];
-        localStorage.setItem('collectio_v3', JSON.stringify(daily));
-        updateDashTotal();
+        let history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}');
+        if (!history[today]) history[today] = { total: 0, buckets: {} };
+        history[today].total += amt;
+        for (let b in stats) history[today].buckets[b] = (history[today].buckets[b] || 0) + stats[b];
+        localStorage.setItem('collectio_history_v4', JSON.stringify(history));
+        updateDashboard();
     }
 
-    function updateDashTotal() {
-        const today = new Date().toLocaleDateString();
-        const daily = JSON.parse(localStorage.getItem('collectio_v3') || '{}')[today] || {total:0};
-        document.getElementById('dash-total').innerText = daily.total.toLocaleString();
-        document.getElementById('goal-text').innerText = parseInt(dailyGoal).toLocaleString();
-        const percent = Math.min((daily.total / dailyGoal) * 100, 100);
-        document.getElementById('progress-bar').style.width = percent + "%";
+    function updateDashboard() {
+        const now = new Date();
+        const monthKey = `/${now.getMonth()+1}/${now.getFullYear()}`;
+        const history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}');
+        
+        let monthTotal = 0, monthB0 = 0, monthB1 = 0;
+
+        // รวมยอดเฉพาะในเดือนปัจจุบัน
+        for (let date in history) {
+            if (date.endsWith(monthKey)) {
+                monthTotal += history[date].total;
+                monthB0 += (history[date].buckets['B0'] || 0);
+                monthB1 += (history[date].buckets['B1'] || 0);
+            }
+        }
+
+        document.getElementById('dash-month-total').innerText = monthTotal.toLocaleString();
+        
+        // Update B0 Goal
+        const goalB0 = localStorage.getItem('monthly_goal_B0') || 0;
+        document.getElementById('text-goal-b0').innerText = parseInt(goalB0).toLocaleString();
+        const pctB0 = goalB0 > 0 ? Math.min((monthB0 / goalB0) * 100, 100) : 0;
+        document.getElementById('bar-b0').style.width = pctB0 + "%";
+        document.getElementById('pct-b0').innerText = Math.round(pctB0) + "%";
+
+        // Update B1 Goal
+        const goalB1 = localStorage.getItem('monthly_goal_B1') || 0;
+        document.getElementById('text-goal-b1').innerText = parseInt(goalB1).toLocaleString();
+        const pctB1 = goalB1 > 0 ? Math.min((monthB1 / goalB1) * 100, 100) : 0;
+        document.getElementById('bar-b1').style.width = pctB1 + "%";
+        document.getElementById('pct-b1').innerText = Math.round(pctB1) + "%";
     }
 
     function sendDailySummary() {
         const today = new Date().toLocaleDateString();
-        const daily = JSON.parse(localStorage.getItem('collectio_v3') || '{}')[today];
-        if(!daily) return alert("ไม่มีข้อมูล");
+        const history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}')[today];
+        if(!history) return alert("ไม่มีข้อมูลวันนี้");
         let msg = `📊 สรุปยอดสะสม (${document.getElementById('branch').value})\nวันที่: ${today}\n---\n`;
-        Object.keys(daily.buckets).sort().forEach(b => msg += `${b}: ${daily.buckets[b].toLocaleString()} ฿\n`);
-        msg += `---\nรวมสุทธิ: ${daily.total.toLocaleString()} ฿`;
+        Object.keys(history.buckets).sort().forEach(b => msg += `${b}: ${history.buckets[b].toLocaleString()} ฿\n`);
+        msg += `---\nรวมสุทธิ: ${history.total.toLocaleString()} ฿`;
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
     }
 
-    function confirmReset() { if(confirm("ล้างข้อมูลวันนี้ทั้งหมด?")) { localStorage.removeItem('collectio_v3'); updateDashTotal(); } }
+    function confirmReset() { 
+        const today = new Date().toLocaleDateString();
+        if(confirm(`ล้างข้อมูลยอดสะสมของวันนี้ (${today}) ใช่หรือไม่?\n(ข้อมูลวันอื่นและเป้าหมายเดือนจะไม่หาย)`)) { 
+            let history = JSON.parse(localStorage.getItem('collectio_history_v4') || '{}');
+            delete history[today];
+            localStorage.setItem('collectio_history_v4', JSON.stringify(history));
+            updateDashboard(); 
+        } 
+    }
 
-    updateDashBranch(); updateDashTotal();
+    updateDashBranch(); updateDashboard();
 </script>
 </body>
 </html>
