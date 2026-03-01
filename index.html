@@ -24,13 +24,11 @@
             box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1); padding: 20px; margin-bottom: 15px;
         }
         
-        /* Dashboard Pro */
         .dashboard { background: var(--dark); color: white; border-radius: 20px; padding: 18px; }
         .main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .dash-label { font-size: 0.75rem; opacity: 0.7; }
         .dash-value { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
         
-        /* Mini Summary */
         .mini-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
         .mini-box { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; }
         .mini-tag { font-size: 0.65rem; text-transform: uppercase; margin-bottom: 2px; }
@@ -60,7 +58,9 @@
         .btn { border: none; border-radius: 16px; padding: 15px; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; transition: 0.2s; }
         .btn-add { background: var(--dark); color: white; }
         .btn-undo { background: #f1f5f9; color: #64748b; font-size: 0.8rem; }
-        .btn-send { background: var(--primary); color: white; width: 100%; margin-top: 15px; font-size: 1.1rem; }
+        .btn-send { background: var(--primary); color: white; flex: 2; font-size: 1rem; }
+        .btn-copy { background: #6366f1; color: white; flex: 1; font-size: 0.9rem; }
+        .action-area { display: flex; gap: 10px; margin-top: 15px; }
         .btn-tool { background: white; color: var(--dark); border: 1px solid #ddd; width: 100%; margin-top: 10px; font-size: 0.9rem; }
     </style>
 </head>
@@ -123,7 +123,10 @@
         <div class="glass">
             <h3>📋 รายการรอบนี้</h3>
             <div id="final-list"></div>
-            <button class="btn btn-send" onclick="sendLine()">🚀 ส่งเข้า LINE</button>
+            <div class="action-area">
+                <button class="btn btn-copy" onclick="copyToClipboard()">📋 คัดลอก</button>
+                <button class="btn btn-send" onclick="sendLine()">🚀 ส่งเข้า LINE</button>
+            </div>
         </div>
     </div>
 
@@ -171,8 +174,7 @@
         `).join('');
     }
 
-    function sendLine() {
-        haptic();
+    function generateMessage() {
         const branch = document.getElementById('branch').value;
         let msg = `สาขา: ${branch}\n`, total = 0, stats = {};
         items.forEach(i => {
@@ -181,6 +183,22 @@
             stats[i.bkt] = (stats[i.bkt] || 0) + i.amt;
         });
         msg += `รวม ${total.toLocaleString()} บาท`;
+        return { msg, total, stats };
+    }
+
+    function copyToClipboard() {
+        haptic();
+        const { msg } = generateMessage();
+        navigator.clipboard.writeText(msg).then(() => {
+            alert("คัดลอกลง Clipboard แล้ว!");
+        }).catch(err => {
+            alert("ไม่สามารถคัดลอกได้: " + err);
+        });
+    }
+
+    function sendLine() {
+        haptic();
+        const { msg, total, stats } = generateMessage();
         saveHistory(total, stats);
         window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
         items = []; render();
