@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,246 +8,557 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #22c55e; --dark: #0f172a;
-            --b0: #22c55e; --b1: #eab308; --b2: #f97316;
-            --b3: #ef4444; --b4: #b91c1c; --b5: #7f1d1d;
+            --primary: #22c55e;
+            --dark: #0f172a;
+            --b0: #22c55e;
+            --b1: #eab308;
+            --b2: #f97316;
+            --b3: #ef4444;
+            --b4: #b91c1c;
+            --b5: #7f1d1d;
         }
+
         body {
             font-family: 'Sarabun', sans-serif;
             background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);
             background-attachment: fixed;
-            margin: 0; padding: 15px; min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
         }
-        .container { max-width: 480px; margin: auto; }
+
+        .container {
+            max-width: 480px;
+            margin: auto;
+        }
+
         .glass {
-            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
-            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1); padding: 20px; margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
         }
-        
-        .dashboard { background: var(--dark); color: white; border-radius: 20px; padding: 18px; }
-        .main-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .dash-label { font-size: 0.75rem; opacity: 0.7; }
-        .dash-value { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
-        
-        .mini-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
-        .mini-box { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; }
-        .mini-tag { font-size: 0.65rem; text-transform: uppercase; margin-bottom: 2px; }
-        .mini-amt { font-size: 1rem; font-weight: 600; }
 
-        label { font-size: 0.8rem; font-weight: 600; color: #444; display: block; margin: 10px 0 5px; }
-        select, input {
-            width: 100%; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 12px;
-            font-size: 1rem; box-sizing: border-box; font-family: 'Sarabun'; background: rgba(255,255,255,0.5);
+        .dashboard {
+            background: var(--dark);
+            color: white;
+            border-radius: 20px;
+            padding: 18px;
         }
-        .quick-date { display: flex; gap: 8px; margin-top: 5px; }
-        .date-btn { flex: 1; padding: 6px; font-size: 0.75rem; border-radius: 8px; border: none; background: rgba(0,0,0,0.05); cursor: pointer;}
-        
-        .bucket-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 10px 0; }
-        .b-pad { padding: 10px 0; border-radius: 12px; text-align: center; border: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-size: 0.8rem; font-weight: 600; background: white; }
-        .b-pad.active { color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .b-pad[data-b="B0"].active { background: var(--b0); }
-        .b-pad[data-b="B1"].active { background: var(--b1); }
-        .b-pad[data-b="B2"].active { background: var(--b2); }
-        .b-pad[data-b="B3"].active { background: var(--b3); }
-        .b-pad[data-b="B4"].active { background: var(--b4); }
-        .b-pad[data-b="B5"].active { background: var(--b5); }
 
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 14px; background: white; border-left: 5px solid #ddd; }
-        
-        .btn-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 10px; }
-        .btn { border: none; border-radius: 16px; padding: 15px; font-weight: 600; cursor: pointer; font-family: 'Sarabun'; transition: 0.2s; }
-        .btn-add { background: var(--dark); color: white; }
-        .btn-undo { background: #f1f5f9; color: #64748b; font-size: 0.8rem; }
-        .btn-send { background: var(--primary); color: white; flex: 2; font-size: 1rem; }
-        .btn-copy { background: #6366f1; color: white; flex: 1; font-size: 0.9rem; }
-        .action-area { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-tool { background: white; color: var(--dark); border: 1px solid #ddd; width: 100%; margin-top: 10px; font-size: 0.9rem; }
+        .main-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .dash-label {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .dash-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .mini-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 12px;
+        }
+
+        .mini-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+
+        .mini-tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .mini-amt {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #444;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        select,
+        input {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: 'Sarabun';
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .quick-date {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .date-btn {
+            flex: 1;
+            padding: 6px;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        .bucket-grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 6px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            z-index: 1;
+        }
+
+        .bucket-indicator {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            height: calc(100% - 12px);
+            width: calc((100% - 12px - (6px * 5)) / 6);
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--b0) 0%, #16a34a 100%);
+            z-index: -1;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .b-pad {
+            padding: 10px 0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: transparent;
+            transition: all 0.3s ease;
+            color: #555;
+            position: relative;
+        }
+
+        .b-pad:hover {
+            color: #111;
+        }
+
+        .b-pad.active {
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            background: white;
+            border-left: 5px solid #ddd;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 16px;
+            padding: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Sarabun';
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .btn-undo {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #475569;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+            flex: 2;
+            font-size: 1rem;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .action-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-tool {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--dark);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="dashboard glass">
-        <div class="main-row">
-            <div>
-                <div class="dash-label">ยอดเก็บสะสมวันนี้ (รวม)</div>
-                <div class="dash-value" id="dash-total">0</div>
+    <div class="container">
+        <div class="dashboard glass">
+            <div class="main-row">
+                <div>
+                    <div class="dash-label">ยอดเก็บสะสมวันนี้ (รวม)</div>
+                    <div class="dash-value" id="dash-total">0</div>
+                </div>
+                <div style="text-align:right">
+                    <div class="dash-label">สาขา</div>
+                    <div id="dash-branch" style="font-weight:600;">-</div>
+                </div>
             </div>
-            <div style="text-align:right">
-                <div class="dash-label">สาขา</div>
-                <div id="dash-branch" style="font-weight:600;">-</div>
+            <div class="mini-summary">
+                <div class="mini-box">
+                    <div class="mini-tag" style="color:var(--b0)">● ยอด B0</div>
+                    <div class="mini-amt" id="mini-b0">0</div>
+                </div>
+                <div class="mini-box">
+                    <div class="mini-tag" style="color:var(--b1)">● ยอด B1</div>
+                    <div class="mini-amt" id="mini-b1">0</div>
+                </div>
             </div>
         </div>
-        <div class="mini-summary">
-            <div class="mini-box">
-                <div class="mini-tag" style="color:var(--b0)">● ยอด B0</div>
-                <div class="mini-amt" id="mini-b0">0</div>
-            </div>
-            <div class="mini-box">
-                <div class="mini-tag" style="color:var(--b1)">● ยอด B1</div>
-                <div class="mini-amt" id="mini-b1">0</div>
-            </div>
-        </div>
-    </div>
 
-    <div class="glass">
-        <label>สาขาปฏิบัติงาน</label>
-        <select id="branch" onchange="updateDashBranch()">
-            <option>สาขาเขาช่องพราน</option><option>สาขานางแก้ว</option><option>สาขาจอมบึง</option>
-            <option>สาขาดอนตูมราชบุรี</option><option>สาขาสวนผึ้ง</option><option>สาขาบ้านคา</option>
-            <option>สาขาด่านทับตะโก</option><option>สาขาหุบกระทิง</option><option>สาขาชัฎป่าหวาย</option>
-            <option>สาขาหนองเสือ</option><option>สาขาท่ามะกา</option><option>สาขาลูกแก</option>
-            <option>สาขาหนองตากยา</option><option>สาขาท่าเรือ</option><option>สาขาตะคร้ำเอน</option>
-        </select>
-
-        <div style="display: flex; gap: 10px;">
-            <div style="flex:1"><label>Due Date</label><input type="text" id="t-due" placeholder="4/2"><div class="quick-date"><button class="date-btn" onclick="quickDate(0)">วันนี้</button><button class="date-btn" onclick="quickDate(1)">พรุ่งนี้</button></div></div>
-            <div style="flex:2"><label>ยอดหนี้ (บาท)</label><input type="number" id="t-amt" placeholder="0.00" style="font-size:1.2rem; font-weight:bold;"></div>
-        </div>
-
-        <label>Bucket</label>
-        <div class="bucket-grid">
-            <div class="b-pad active" data-b="B0" onclick="setB(this)">B0</div><div class="b-pad" data-b="B1" onclick="setB(this)">B1</div><div class="b-pad" data-b="B2" onclick="setB(this)">B2</div><div class="b-pad" data-b="B3" onclick="setB(this)">B3</div><div class="b-pad" data-b="B4" onclick="setB(this)">B4</div><div class="b-pad" data-b="B5" onclick="setB(this)">B5</div>
-        </div>
-
-        <label>เลขที่สัญญา</label>
-        <input type="text" id="t-cnt" placeholder="ระบุเลขที่สัญญา">
-        
-        <div class="btn-group">
-            <button class="btn btn-add" id="main-btn" onclick="addItem()">เพิ่มลงรายการ</button>
-            <button class="btn btn-undo" id="undo-btn" onclick="undoItem()" style="display:none;">↩️ Undo</button>
-        </div>
-    </div>
-
-    <div id="list-card" style="display:none;">
         <div class="glass">
-            <h3>📋 รายการรอบนี้</h3>
-            <div id="final-list"></div>
-            <div class="action-area">
-                <button class="btn btn-copy" onclick="copyToClipboard()">📋 คัดลอก</button>
-                <button class="btn btn-send" onclick="sendLine()">🚀 ส่งเข้า LINE</button>
+            <label>สาขาปฏิบัติงาน</label>
+            <select id="branch" onchange="updateDashBranch()">
+                <option>สาขาเขาช่องพราน</option>
+                <option>สาขานางแก้ว</option>
+                <option>สาขาจอมบึง</option>
+                <option>สาขาดอนตูมราชบุรี</option>
+                <option>สาขาสวนผึ้ง</option>
+                <option>สาขาบ้านคา</option>
+                <option>สาขาด่านทับตะโก</option>
+                <option>สาขาหุบกระทิง</option>
+                <option>สาขาชัฎป่าหวาย</option>
+                <option>สาขาหนองเสือ</option>
+                <option>สาขาท่ามะกา</option>
+                <option>สาขาลูกแก</option>
+                <option>สาขาหนองตากยา</option>
+                <option>สาขาท่าเรือ</option>
+                <option>สาขาตะคร้ำเอน</option>
+            </select>
+
+            <div style="display: flex; gap: 10px;">
+                <div style="flex:1"><label>Due Date</label><input type="text" id="t-due" placeholder="4/2">
+                    <div class="quick-date"><button class="date-btn" onclick="quickDate(0)">วันนี้</button><button
+                            class="date-btn" onclick="quickDate(1)">พรุ่งนี้</button></div>
+                </div>
+                <div style="flex:2"><label>ยอดหนี้ (บาท)</label><input type="number" id="t-amt" placeholder="0.00"
+                        style="font-size:1.2rem; font-weight:bold;"></div>
+            </div>
+
+            <label>Bucket</label>
+            <div class="bucket-grid" id="bucket-container">
+                <div class="bucket-indicator" id="b-indicator"></div>
+                <div class="b-pad active" data-b="B0" data-idx="0" onclick="setB(this)">B0</div>
+                <div class="b-pad" data-b="B1" data-idx="1" onclick="setB(this)">B1</div>
+                <div class="b-pad" data-b="B2" data-idx="2" onclick="setB(this)">B2</div>
+                <div class="b-pad" data-b="B3" data-idx="3" onclick="setB(this)">B3</div>
+                <div class="b-pad" data-b="B4" data-idx="4" onclick="setB(this)">B4</div>
+                <div class="b-pad" data-b="B5" data-idx="5" onclick="setB(this)">B5</div>
+            </div>
+
+            <label>เลขที่สัญญา</label>
+            <input type="text" id="t-cnt" placeholder="ระบุเลขที่สัญญา (12 หลัก)" maxlength="12">
+
+            <div class="btn-group">
+                <button class="btn btn-add" id="main-btn" onclick="addItem()">เพิ่มลงรายการ</button>
+                <button class="btn btn-undo" id="undo-btn" onclick="undoItem()" style="display:none;">↩️ Undo</button>
             </div>
         </div>
+
+        <div id="list-card" style="display:none;">
+            <div class="glass">
+                <h3>📋 รายการรอบนี้</h3>
+                <div id="final-list"></div>
+                <div class="action-area">
+                    <button class="btn btn-copy" onclick="copyToClipboard()">📋 คัดลอก</button>
+                    <button class="btn btn-send" onclick="sendLine()">🚀 ส่งเข้า LINE</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-tool" onclick="sendDailySummary()">📊 ส่งสรุปยอดวันนี้ (แยก Bucket)</button>
+        <button class="btn btn-tool" onclick="confirmReset()" style="color:#ef4444; border-color:#fecaca;">⚠️
+            ล้างข้อมูลเฉพาะของวันนี้</button>
     </div>
 
-    <button class="btn btn-tool" onclick="sendDailySummary()">📊 ส่งสรุปยอดวันนี้ (แยก Bucket)</button>
-    <button class="btn btn-tool" onclick="confirmReset()" style="color:#ef4444; border-color:#fecaca;">⚠️ ล้างข้อมูลเฉพาะของวันนี้</button>
-</div>
+    <script>
+        let currentB = "B0", items = [], editingId = null;
 
-<script>
-    let currentB = "B0", items = [], editingId = null;
+        const haptic = () => { if (window.navigator.vibrate) window.navigator.vibrate(10); };
 
-    const haptic = () => { if(window.navigator.vibrate) window.navigator.vibrate(10); };
+        function setB(el) {
+            haptic();
+            document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            currentB = el.dataset.b;
 
-    function setB(el) { haptic(); document.querySelectorAll('.b-pad').forEach(p => p.classList.remove('active')); el.classList.add('active'); currentB = el.dataset.b; }
-    function quickDate(offset) { haptic(); const d = new Date(); d.setDate(d.getDate() + offset); document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth()+1}`; }
-    function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
+            const idx = parseInt(el.dataset.idx);
+            const indicator = document.getElementById('b-indicator');
+            // Move indicator
+            indicator.style.transform = `translateX(calc(${idx * 100}% + ${idx * 6}px))`;
 
-    function addItem() {
-        haptic();
-        const due = document.getElementById('t-due').value, amt = parseFloat(document.getElementById('t-amt').value), cnt = document.getElementById('t-cnt').value;
-        if (!due || !amt || !cnt) return alert("ข้อมูลไม่ครบ");
-        items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
-        render(); 
-        document.getElementById('t-amt').value = ''; 
-        document.getElementById('t-cnt').value = '';
-        document.getElementById('undo-btn').style.display = 'block';
-    }
-
-    function undoItem() {
-        haptic();
-        if(items.length > 0) {
-            items.pop();
-            render();
-            if(items.length === 0) document.getElementById('undo-btn').style.display = 'none';
+            // Set dynamic gradient
+            const colors = {
+                'B0': 'linear-gradient(135deg, var(--b0) 0%, #16a34a 100%)',
+                'B1': 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+                'B2': 'linear-gradient(135deg, #fb923c 0%, #ea580c 100%)',
+                'B3': 'linear-gradient(135deg, #f87171 0%, #dc2626 100%)',
+                'B4': 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
+                'B5': 'linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%)'
+            };
+            indicator.style.background = colors[currentB];
         }
-    }
+        function quickDate(offset) { haptic(); const d = new Date(); d.setDate(d.getDate() + offset); document.getElementById('t-due').value = `${d.getDate()}/${d.getMonth() + 1}`; }
+        function updateDashBranch() { document.getElementById('dash-branch').innerText = document.getElementById('branch').value; }
 
-    function render() {
-        const container = document.getElementById('final-list');
-        document.getElementById('list-card').style.display = items.length ? 'block' : 'none';
-        container.innerHTML = items.map(i => `
+        function addItem() {
+            haptic();
+            const due = document.getElementById('t-due').value;
+            const amt = parseFloat(document.getElementById('t-amt').value);
+            let cnt = document.getElementById('t-cnt').value.trim();
+
+            if (!due || !amt || !cnt) return alert("⚠️ ข้อมูลไม่ครบ กรุณากรอกให้ครบทุกช่อง");
+            if (cnt.length < 12) return alert("⚠️ กรุณากรอกเลขที่สัญญาให้ครบ 12 หลัก (ปัจจุบันมี " + cnt.length + " หลัก)");
+            if (cnt.length > 12) return alert("⚠️ เลขที่สัญญาต้องมีแค่ 12 หลักเท่านั้น");
+            if (!/^\d+$/.test(cnt)) return alert("⚠️ เลขที่สัญญาต้องเป็นตัวเลขเท่านั้น");
+
+            // Check for duplicate contract number, ignoring if we are editing ITSELF
+            const isDuplicate = items.some(item => item.cnt === cnt && item.id !== editingId);
+            if (isDuplicate) return alert("⚠️ เลขที่สัญญานี้ถูกเพิ่มลงไปในรายการแล้ว!");
+
+            if (editingId) {
+                // Update existing item
+                const index = items.findIndex(i => i.id === editingId);
+                if (index > -1) {
+                    items[index] = { ...items[index], due, amt, cnt, bkt: currentB };
+                }
+                document.getElementById('main-btn').innerText = "เพิ่มลงรายการ";
+                document.getElementById('main-btn').style.background = ""; // reset to default Add button style
+                editingId = null;
+            } else {
+                // Add new item
+                items.push({ id: Date.now(), due, amt, cnt, bkt: currentB });
+            }
+
+            render();
+            document.getElementById('t-amt').value = '';
+            document.getElementById('t-cnt').value = '';
+            document.getElementById('undo-btn').style.display = 'block';
+        }
+
+        function editItem(id) {
+            haptic();
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            // Populate form with item data
+            document.getElementById('t-due').value = item.due;
+            document.getElementById('t-amt').value = item.amt;
+            document.getElementById('t-cnt').value = item.cnt;
+
+            // Set bucket active state
+            const targetPad = document.querySelector(`.b-pad[data-b="${item.bkt}"]`);
+            if (targetPad) setB(targetPad);
+
+            editingId = id;
+
+            // Change Add Button to Edit Mode
+            const mainBtn = document.getElementById('main-btn');
+            mainBtn.innerText = "บันทึกการแก้ไข";
+            mainBtn.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
+
+            // Scroll to top to see form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function undoItem() {
+            haptic();
+            if (items.length > 0) {
+                if (editingId) {
+                    // Cancel edit mode
+                    document.getElementById('main-btn').innerText = "เพิ่มลงรายการ";
+                    document.getElementById('main-btn').style.background = "";
+                    editingId = null;
+                    document.getElementById('t-amt').value = '';
+                    document.getElementById('t-cnt').value = '';
+                } else {
+                    items.pop();
+                    render();
+                    if (items.length === 0) document.getElementById('undo-btn').style.display = 'none';
+                }
+            }
+        }
+
+        function render() {
+            const container = document.getElementById('final-list');
+            document.getElementById('list-card').style.display = items.length ? 'block' : 'none';
+            container.innerHTML = items.map(i => `
             <div class="item" style="border-left-color: var(--${i.bkt.toLowerCase()})">
-                <div><b>${i.cnt}</b><br><small>Due ${i.due} (${i.bkt})</small></div>
-                <div style="text-align:right"><b>${i.amt.toLocaleString()}</b></div>
+                <div style="flex: 1; cursor: pointer;" onclick="editItem(${i.id})">
+                    <b>${i.cnt}</b><br>
+                    <small>Due ${i.due} (${i.bkt})</small>
+                </div>
+                <div style="text-align:right" onclick="editItem(${i.id})">
+                    <b>${i.amt.toLocaleString()}</b><br>
+                    <span style="font-size: 0.7rem; color: #6366f1; text-decoration: underline; cursor: pointer;">✏️ แก้ไข</span>
+                </div>
             </div>
         `).join('');
-    }
+        }
 
-    function generateMessage() {
-        const branch = document.getElementById('branch').value;
-        let msg = `สาขา: ${branch}\n`, total = 0, stats = {};
-        items.forEach(i => {
-            msg += `Due ${i.due} (${i.bkt})\n${i.cnt} = ${i.amt.toLocaleString()}\n`;
-            total += i.amt;
-            stats[i.bkt] = (stats[i.bkt] || 0) + i.amt;
-        });
-        msg += `รวม ${total.toLocaleString()} บาท`;
-        return { msg, total, stats };
-    }
+        function generateMessage() {
+            const branch = document.getElementById('branch').value;
+            let msg = `${branch}\n`, total = 0, stats = {};
 
-    function copyToClipboard() {
-        haptic();
-        const { msg } = generateMessage();
-        navigator.clipboard.writeText(msg).then(() => {
-            alert("คัดลอกลง Clipboard แล้ว!");
-        }).catch(err => {
-            alert("ไม่สามารถคัดลอกได้: " + err);
-        });
-    }
+            const groups = {};
+            items.forEach(i => {
+                const head = `DuE ${i.due} (${i.bkt})`;
+                if (!groups[head]) groups[head] = [];
+                groups[head].push(i);
+                total += i.amt;
+                stats[i.bkt] = (stats[i.bkt] || 0) + i.amt;
+            });
 
-    function sendLine() {
-        haptic();
-        const { msg, total, stats } = generateMessage();
-        saveHistory(total, stats);
-        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
-        items = []; render();
-        document.getElementById('undo-btn').style.display = 'none';
-    }
+            for (const head in groups) {
+                msg += `${head}\n`;
+                groups[head].forEach(i => {
+                    msg += `${i.cnt} = ${i.amt.toLocaleString()}\n`;
+                });
+            }
 
-    function saveHistory(amt, stats) {
-        const today = new Date().toLocaleDateString();
-        let history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}');
-        if (!history[today]) history[today] = { total: 0, buckets: {} };
-        history[today].total += amt;
-        for (let b in stats) history[today].buckets[b] = (history[today].buckets[b] || 0) + stats[b];
-        localStorage.setItem('collectio_daily_v6', JSON.stringify(history));
-        updateDashboard();
-    }
+            msg += `รวม ${total.toLocaleString()}`;
+            return { msg, total, stats };
+        }
 
-    function updateDashboard() {
-        const today = new Date().toLocaleDateString();
-        const history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}')[today] || {total:0, buckets:{}};
-        
-        document.getElementById('dash-total').innerText = history.total.toLocaleString();
-        document.getElementById('mini-b0').innerText = (history.buckets['B0'] || 0).toLocaleString();
-        document.getElementById('mini-b1').innerText = (history.buckets['B1'] || 0).toLocaleString();
-    }
+        function copyToClipboard() {
+            haptic();
+            const { msg } = generateMessage();
+            navigator.clipboard.writeText(msg).then(() => {
+                alert("คัดลอกลง Clipboard แล้ว!");
+            }).catch(err => {
+                alert("ไม่สามารถคัดลอกได้: " + err);
+            });
+        }
 
-    function sendDailySummary() {
-        haptic();
-        const today = new Date().toLocaleDateString();
-        const history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}')[today];
-        if(!history) return alert("ไม่มีข้อมูลวันนี้");
-        let msg = `📊 สรุปยอดสะสม (${document.getElementById('branch').value})\nวันที่: ${today}\n---\n`;
-        Object.keys(history.buckets).sort().forEach(b => msg += `${b}: ${history.buckets[b].toLocaleString()} ฿\n`);
-        msg += `---\nรวมสุทธิ: ${history.total.toLocaleString()} ฿`;
-        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
-    }
+        function sendLine() {
+            haptic();
+            const { msg, total, stats } = generateMessage();
+            saveHistory(total, stats);
+            window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
+            items = []; render();
+            document.getElementById('undo-btn').style.display = 'none';
+        }
 
-    function confirmReset() { 
-        haptic();
-        if(confirm("ล้างข้อมูลยอดจัดเก็บของวันนี้ทั้งหมดใช่หรือไม่?")) { 
+        function saveHistory(amt, stats) {
             const today = new Date().toLocaleDateString();
             let history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}');
-            delete history[today];
+            if (!history[today]) history[today] = { total: 0, buckets: {} };
+            history[today].total += amt;
+            for (let b in stats) history[today].buckets[b] = (history[today].buckets[b] || 0) + stats[b];
             localStorage.setItem('collectio_daily_v6', JSON.stringify(history));
-            updateDashboard(); 
-        } 
-    }
+            updateDashboard();
+        }
 
-    updateDashBranch(); updateDashboard();
-</script>
+        function updateDashboard() {
+            const today = new Date().toLocaleDateString();
+            const history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}')[today] || { total: 0, buckets: {} };
+
+            document.getElementById('dash-total').innerText = history.total.toLocaleString();
+            document.getElementById('mini-b0').innerText = (history.buckets['B0'] || 0).toLocaleString();
+            document.getElementById('mini-b1').innerText = (history.buckets['B1'] || 0).toLocaleString();
+        }
+
+        function sendDailySummary() {
+            haptic();
+            const today = new Date().toLocaleDateString();
+            const history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}')[today];
+            if (!history) return alert("ไม่มีข้อมูลวันนี้");
+            let msg = `📊 สรุปยอดสะสม (${document.getElementById('branch').value})\nวันที่: ${today}\n---\n`;
+            Object.keys(history.buckets).sort().forEach(b => msg += `${b}: ${history.buckets[b].toLocaleString()} ฿\n`);
+            msg += `---\nรวมสุทธิ: ${history.total.toLocaleString()} ฿`;
+            window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(msg);
+        }
+
+        function confirmReset() {
+            haptic();
+            if (confirm("ล้างข้อมูลยอดจัดเก็บของวันนี้ทั้งหมดใช่หรือไม่?")) {
+                const today = new Date().toLocaleDateString();
+                let history = JSON.parse(localStorage.getItem('collectio_daily_v6') || '{}');
+                delete history[today];
+                localStorage.setItem('collectio_daily_v6', JSON.stringify(history));
+                updateDashboard();
+            }
+        }
+
+        updateDashBranch(); updateDashboard();
+    </script>
 </body>
+
 </html>
