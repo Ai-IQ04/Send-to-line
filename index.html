@@ -479,7 +479,7 @@
 
             const groups = {};
             items.forEach(i => {
-                const head = `DuE ${i.due} (${i.bkt})`;
+                const head = `Due ${i.due} (${i.bkt})`;
                 if (!groups[head]) groups[head] = [];
                 groups[head].push(i);
                 total += i.amt;
@@ -562,3 +562,4 @@
 </body>
 
 </html>
+
